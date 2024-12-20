@@ -4,6 +4,10 @@ export const toastMessages = {
   LOGIN_SUCCESSFUL: "You are now logged in",
   VERIFY_RESEND_SUCCESSFUL: "Verification email has been resent",
   ERROR: "An error has occured, please try again",
+
+  DELETE_USER_SUCCESSFUL: "User deleted successfully",
+  DELETE_USER_ERROR: "Failed to delete user",
+
   INVITE_SUCCESSFUL: "Invitation sent successfully",
   INVITE_RESENT_SUCCESSFUL: "Invitation resent successfully",
   INVITE_DELETED_SUCCESSFUL: "Invitation deleted successfully",

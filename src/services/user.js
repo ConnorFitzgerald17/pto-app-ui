@@ -63,6 +63,10 @@ const deleteInvite = ({ inviteId }) => {
   return createRequest("DELETE", `user/invite`, inviteId);
 };
 
+const deleteUser = ({ userId }) => {
+  return createRequest("DELETE", `user/delete`, userId);
+};
+
 const registerFromInvite = ({ token, password, firstName, lastName }) => {
   return createRequest("POST", `user/register-invite`, {
     token,
@@ -84,6 +88,7 @@ const userService = {
   registerFromInvite,
   resendInvite,
   deleteInvite,
+  deleteUser,
 };
 
 export default userService;

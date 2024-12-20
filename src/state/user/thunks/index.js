@@ -5,6 +5,7 @@ import { registerFromInvite } from "./register-invite";
 import { invite } from "./invite";
 import { resendInvite } from "./resend-invite";
 import { deleteInvite } from "./delete-invite";
+import { deleteUser } from "./delete-user";
 const userThunks = {
   getUser,
   login,
@@ -13,6 +14,7 @@ const userThunks = {
   registerFromInvite,
   resendInvite,
   deleteInvite,
+  deleteUser,
 };
 
 export default userThunks;

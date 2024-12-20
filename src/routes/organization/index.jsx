@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 
 import { createSuccessToast, createErrorToast } from "src/utils/create-toast";
 import { toastMessages } from "src/constants/toast-messages";
+import { decodeAPIMessage } from "src/utils/decode-api-message";
+import { get } from "lodash";
 
 import orgThunks from "src/state/org/thunks";
 import rolesThunks from "src/state/role/thunks";
@@ -69,7 +71,7 @@ export default function OrganizationDashboard() {
     (state) => state.user.details?.role?.permissions || [],
   );
   const location = useLocation();
-  const initialActiveTab = location.state?.activeTab || "Active Users";
+  const initialActiveTab = location?.state?.activeTab || "Active Users";
 
   useEffect(() => {
     dispatch(orgThunks.getOrgUsers({}));
@@ -79,11 +81,21 @@ export default function OrganizationDashboard() {
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isCreateRoleModalOpen, setIsCreateRoleModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(initialActiveTab);
+  const [activeTab, setActiveTab] = useState(() => {
+    return (
+      localStorage.getItem("activeTab") || initialActiveTab || "Active Users"
+    );
+  });
   const [isResending, setIsResending] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [inviteIdToDelete, setInviteIdToDelete] = useState(null);
+  const [isDeleteUserConfirmOpen, setIsDeleteUserConfirmOpen] = useState(false);
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [filteredTabs, setFilteredTabs] = useState(tabs);
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   useEffect(() => {
     setFilteredTabs(
@@ -148,6 +160,39 @@ export default function OrganizationDashboard() {
     setInviteIdToDelete(inviteId);
   };
 
+  const handleDeleteUser = (userId) => {
+    try {
+      dispatch(
+        userThunks.deleteUser(
+          { data: { userId } },
+          (err) => {
+            if (!err) {
+              createSuccessToast(toastMessages.DELETE_USER_SUCCESSFUL);
+              handleFetchUsers();
+              return;
+            }
+            createErrorToast(
+              decodeAPIMessage(get(err, "response.data.error", "")),
+            );
+          },
+          false,
+        ),
+      );
+    } catch (error) {
+      createErrorToast(toastMessages.UPDATE_ROLE_ERROR);
+    }
+  };
+
+  const handleOpenDeleteUser = (userId) => {
+    setIsDeleteUserConfirmOpen(true);
+    setUserIdToDelete(userId);
+  };
+
+  const handleCloseDeleteUser = () => {
+    setIsDeleteUserConfirmOpen(false);
+    setUserIdToDelete(null);
+  };
+
   return (
     <div className="min-h-screen p-6 mt-12">
       {/* Invite User Modal */}
@@ -164,6 +209,14 @@ export default function OrganizationDashboard() {
         onConfirm={() => handleDeleteInvite(inviteIdToDelete)}
         title="Delete Invite"
         message="Are you sure you want to delete this invite? This action cannot be undone."
+      />
+      {/* Delete User Modal */}
+      <DeleteConfirmDialog
+        isOpen={isDeleteUserConfirmOpen}
+        onClose={handleCloseDeleteUser}
+        onConfirm={() => handleDeleteUser(userIdToDelete)}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
       />
       {/* Create Role Modal */}
       <CreateRoleModal
@@ -268,7 +321,10 @@ export default function OrganizationDashboard() {
         {activeTab === "Active Users" &&
           orgUsers &&
           orgUsers.users?.length > 0 && (
-            <ActiveUsersTable users={orgUsers.users} />
+            <ActiveUsersTable
+              users={orgUsers.users}
+              handleOpenDeleteUser={handleOpenDeleteUser}
+            />
           )}
 
         {activeTab === "Pending Invites" &&

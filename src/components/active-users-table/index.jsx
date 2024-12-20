@@ -1,6 +1,6 @@
 import React from "react";
 
-const ActiveUsersTable = ({ users }) => {
+const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
   return (
     <div>
       <h2 className="mb-4 text-lg font-medium text-gray-900">Active Users</h2>
@@ -63,7 +63,10 @@ const ActiveUsersTable = ({ users }) => {
                   <button className="text-indigo-600 hover:text-indigo-900">
                     Edit
                   </button>
-                  <button className="ml-4 text-red-600 hover:text-red-900">
+                  <button
+                    className="ml-4 text-red-600 hover:text-red-900"
+                    onClick={() => handleOpenDeleteUser(user.userId)}
+                  >
                     Remove
                   </button>
                 </td>
