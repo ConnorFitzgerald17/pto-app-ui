@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.Toastify__toast-container {
+  z-index: 999999 !important;
+}
+
+.Toastify__toast {
+  min-height: auto;
+}
+
+.Toastify__close-button {
+  margin-right: -12px !important;
+  margin-top: -12px !important;
+}
