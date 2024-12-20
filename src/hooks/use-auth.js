@@ -31,8 +31,8 @@ export const useAuth = ({ authRedirect = false, unauthRedirect = false }) => {
                 navigate("/login");
               }
             },
-            false
-          )
+            false,
+          ),
         );
       } else if (unauthRedirect) {
         navigate(unauthRedirect);

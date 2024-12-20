@@ -45,6 +45,23 @@ const reset = ({ password, token }) => {
   return createRequest("POST", `user/reset`, { password, token });
 };
 
+const invite = ({ email, role, organizationId }) => {
+  return createRequest("POST", `user/invite`, {
+    email,
+    role,
+    organizationId,
+  });
+};
+
+const registerFromInvite = ({ token, password, firstName, lastName }) => {
+  return createRequest("POST", `user/register-invite`, {
+    token,
+    password,
+    firstName,
+    lastName,
+  });
+};
+
 const userService = {
   getUser,
   login,
@@ -53,6 +70,8 @@ const userService = {
   verify,
   requestReset,
   reset,
+  invite,
+  registerFromInvite,
 };
 
 export default userService;

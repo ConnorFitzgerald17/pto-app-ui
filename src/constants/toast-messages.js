@@ -4,4 +4,5 @@ export const toastMessages = {
   LOGIN_SUCCESSFUL: "You are now logged in",
   VERIFY_RESEND_SUCCESSFUL: "Verification email has been resent",
   ERROR: "An error has occured, please try again",
+  INVITE_SUCCESSFUL: "Invitation sent successfully",
 };

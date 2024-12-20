@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import React from "react";
+import { PERMISSIONS } from "./constants/permissions";
 
 import ForgotRoute from "./routes/forgot";
 import LoginRoute from "./routes/login";
@@ -11,6 +12,7 @@ import ResetRoute from "./routes/reset";
 import RootRoute from "./routes/root";
 import VerifyRoute from "./routes/verify";
 import OrganizationRoute from "./routes/organization";
+import RegisterInviteRoute from "./routes/register-invite";
 const App = () => {
   return (
     <>
@@ -26,10 +28,13 @@ const App = () => {
         <Route path="/verify/:token" element={<VerifyRoute />} />
         <Route path="/forgot" element={<ForgotRoute />} />
         <Route path="/reset/:token" element={<ResetRoute />} />
+        <Route path="/join/:token" element={<RegisterInviteRoute />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<RootRoute />} />
         </Route>
-        <Route element={<ProtectedRoute />}>
+        <Route
+          element={<ProtectedRoute permissions={[PERMISSIONS.MANAGE_USERS]} />}
+        >
           <Route path="/organization" element={<OrganizationRoute />} />
         </Route>
         <Route path="*" element={<NotFoundRoute />} />

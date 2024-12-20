@@ -1,30 +1,52 @@
+import userThunks from "src/state/user/thunks";
+import { useDispatch } from "react-redux";
+import get from "lodash/get";
+import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
-import { EnvelopeIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Formik, Form, Field } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
+
+import { createSuccessToast } from "src/utils/create-toast";
+import { toastMessages } from "src/constants/toast-messages";
+import { decodeAPIMessage } from "src/utils/decode-api-message";
+import ErrorBanner from "src/components/error-banner";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  roleId: Yup.string().required("Role is required"),
+  role: Yup.string().required("Role is required"),
 });
 
 const initialValues = {
   email: "",
-  roleId: "",
+  role: "",
 };
 
 const InviteUserModal = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
   const roles = useSelector((state) => state.roles.dropdownRoles);
+  const [error, setError] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      console.log("Inviting user:", values);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      resetForm();
-      onClose();
+      dispatch(
+        userThunks.invite(
+          { data: values },
+          (err) => {
+            if (!err) {
+              createSuccessToast(toastMessages.INVITE_SUCCESSFUL);
+              resetForm();
+              onClose();
+              return;
+            }
+            setError(decodeAPIMessage(get(err, "response.data.error", "")));
+          },
+          false,
+        ),
+      );
     } catch (error) {
       console.error("Error inviting user:", error);
     } finally {
@@ -71,6 +93,8 @@ const InviteUserModal = ({ isOpen, onClose }) => {
             >
               {({ isSubmitting, errors, touched }) => (
                 <Form className="mt-5 space-y-4">
+                  {error && <ErrorBanner message={error} />}
+
                   <div>
                     <label
                       htmlFor="email"
@@ -80,6 +104,7 @@ const InviteUserModal = ({ isOpen, onClose }) => {
                     </label>
                     <Field
                       type="email"
+                      id="email"
                       name="email"
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       placeholder="colleague@company.com"
@@ -93,14 +118,14 @@ const InviteUserModal = ({ isOpen, onClose }) => {
 
                   <div>
                     <label
-                      htmlFor="roleId"
+                      htmlFor="role"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Access Level
                     </label>
                     <Field
                       as="select"
-                      name="roleId"
+                      name="role"
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     >
                       <option value="">Select access level</option>
@@ -110,9 +135,9 @@ const InviteUserModal = ({ isOpen, onClose }) => {
                         </option>
                       ))}
                     </Field>
-                    {errors.roleId && touched.roleId && (
+                    {errors.role && touched.role && (
                       <div className="mt-1 text-sm text-red-600">
-                        {errors.roleId}
+                        {errors.role}
                       </div>
                     )}
                   </div>
