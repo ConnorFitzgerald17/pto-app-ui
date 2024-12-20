@@ -8,7 +8,8 @@ export const deleteInvite = createThunk({
     const { inviteId } = args.data;
     const result = await userService.deleteInvite({ inviteId });
 
-    return result.data;
+    const deletedInvite = result.data;
+    return { deletedInvite };
   },
   onStart: [() => userActions.setLoading(true)],
   onSuccess: [() => userActions.setLoading(false)],

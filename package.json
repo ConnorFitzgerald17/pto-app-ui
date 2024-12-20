@@ -12,6 +12,8 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-tooltip": "^1.1.6",
     "@sentry/react": "^7.66.0",
     "axios": "^1.5.0",
     "class-variance-authority": "^0.7.1",

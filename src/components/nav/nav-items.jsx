@@ -7,7 +7,7 @@ export const navigation = [
     name: "User Management",
     href: "/organization",
     current: false,
-    permissions: [PERMISSIONS.MANAGE_USERS],
+    permissions: [PERMISSIONS.MANAGE_ORGANIZATION],
   },
   { name: "History", href: "/history", current: false, permissions: [] },
 ];

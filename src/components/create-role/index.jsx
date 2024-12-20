@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Dialog } from "@headlessui/react";
 import { KeyIcon } from "@heroicons/react/24/outline";
 import { Formik, Form, Field } from "formik";
@@ -33,6 +33,7 @@ const initialValues = {
 
 const CreateRoleModal = ({ isOpen, onClose, fetchRoles }) => {
   const [error, setError] = useState(false);
+  const isLoading = useSelector((state) => state.roles.isLoading);
   const dispatch = useDispatch();
 
   const handleTemplateChange = (e, setValues) => {
@@ -116,14 +117,7 @@ const CreateRoleModal = ({ isOpen, onClose, fetchRoles }) => {
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({
-                isSubmitting,
-                errors,
-                touched,
-                values,
-                setFieldValue,
-                setValues,
-              }) => (
+              {({ errors, touched, values, setFieldValue, setValues }) => (
                 <Form className="mt-5 space-y-4">
                   {error && <ErrorBanner message={error} />}
 
@@ -253,10 +247,10 @@ const CreateRoleModal = ({ isOpen, onClose, fetchRoles }) => {
                   <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                     <button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isLoading}
                       className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                     >
-                      {isSubmitting ? "Creating..." : "Create Role"}
+                      {isLoading ? "Creating..." : "Create Role"}
                     </button>
                     <button
                       type="button"

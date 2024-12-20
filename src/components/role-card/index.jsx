@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { PERMISSION_DESCRIPTIONS } from "../../constants/permissions";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import DeleteConfirmDialog from "src/components/delete-confirm";
@@ -13,6 +14,7 @@ import { useDispatch } from "react-redux";
 const RoleCard = ({ role, handleFetch }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const currentUser = useSelector((state) => state.user.details);
   const dispatch = useDispatch();
   const handleDeleteRole = () => {
     try {
@@ -21,8 +23,6 @@ const RoleCard = ({ role, handleFetch }) => {
           { data: { id: role.roleId } },
           (err) => {
             if (!err) {
-              console.log("success");
-
               createSuccessToast(toastMessages.ROLE_DELETE_SUCCESSFUL);
               handleFetch();
               return;
@@ -64,6 +64,11 @@ const RoleCard = ({ role, handleFetch }) => {
                   Default
                 </span>
               )}
+              {currentUser.role.roleId === role.roleId && (
+                <span className="text-xs font-medium bg-blue-100 text-blue-800 rounded-md px-1.5 py-0.5 ml-1">
+                  Current
+                </span>
+              )}
             </h3>
             <div className="flex items-center gap-2">
               <Link
@@ -72,12 +77,14 @@ const RoleCard = ({ role, handleFetch }) => {
               >
                 <PencilIcon className="h-4 w-4" />
               </Link>
-              <button
-                onClick={() => setIsDeleteConfirmOpen(true)}
-                className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50"
-              >
-                <TrashIcon className="h-4 w-4" />
-              </button>
+              {currentUser.role.roleId !== role.roleId && (
+                <button
+                  onClick={() => setIsDeleteConfirmOpen(true)}
+                  className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </div>
           <div>

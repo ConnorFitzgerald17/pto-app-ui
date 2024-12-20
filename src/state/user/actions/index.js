@@ -3,9 +3,9 @@ import { setLoading } from "./set-loading";
 import { setUser } from "./set-user";
 
 export const types = Object.freeze({
-  RESET_AUTH: "auth::reset-auth",
-  SET_LOADING: "auth::set-loading",
-  SET_USER: "auth::set-user",
+  RESET_AUTH: "user::reset-auth",
+  SET_LOADING: "user::set-loading",
+  SET_USER: "user::set-user",
 });
 
 const userActions = {

@@ -44,14 +44,14 @@ const tabs = [
     href: "#roles",
     icon: BuildingOfficeIcon,
     current: false,
-    permission: PERMISSIONS.MANAGE_ROLES,
+    permission: PERMISSIONS.MANAGE_ORGANIZATION,
   },
   {
     name: "Policies",
     href: "#policies",
     icon: CreditCardIcon,
     current: false,
-    permission: PERMISSIONS.MANAGE_POLICIES,
+    permission: PERMISSIONS.MANAGE_ORGANIZATION,
   },
 ];
 
@@ -64,7 +64,6 @@ export default function OrganizationDashboard() {
   const roles = useSelector((state) => state.roles.roles);
   const policy = useSelector((state) => state.policy.policy);
   const orgLoading = useSelector((state) => state.org.isLoading);
-  const rolesLoading = useSelector((state) => state.roles.isLoading);
   const policyLoading = useSelector((state) => state.policy.isLoading);
   const dispatch = useDispatch();
   const currentUserPermissions = useSelector(
@@ -106,7 +105,7 @@ export default function OrganizationDashboard() {
     );
   }, [currentUserPermissions]);
 
-  if (orgLoading || rolesLoading || policyLoading) {
+  if (orgLoading || policyLoading) {
     return <LoadingSpinner />;
   }
 
@@ -123,17 +122,29 @@ export default function OrganizationDashboard() {
     dispatch(orgThunks.getOrgUsers({}));
   };
 
-  // TODO: actually show toast when delete is confirmed from backend
   const handleDeleteInvite = async (inviteId) => {
     try {
-      dispatch(userThunks.deleteInvite({ data: { inviteId } }));
-      createSuccessToast(toastMessages.INVITE_DELETED_SUCCESSFUL);
+      dispatch(
+        userThunks.deleteInvite(
+          { data: { inviteId } },
+          (err) => {
+            if (!err) {
+              createSuccessToast(toastMessages.INVITE_DELETED_SUCCESSFUL);
+              handleFetchUsers();
+              return;
+            }
+            createErrorToast(
+              decodeAPIMessage(get(err, "response.data.error", "")),
+            );
+          },
+          false,
+        ),
+      );
     } catch (error) {
       createErrorToast(toastMessages.INVITE_DELETE_ERROR);
     } finally {
       setIsDeleteConfirmOpen(false);
       setInviteIdToDelete(null);
-      dispatch(orgThunks.getOrgUsers({}));
     }
   };
 
@@ -338,8 +349,9 @@ export default function OrganizationDashboard() {
             />
           )}
 
+        {/* Keeping permissions for future use */}
         {activeTab === "Roles" &&
-          currentUserPermissions.includes(PERMISSIONS.MANAGE_ROLES) && (
+          currentUserPermissions.includes(PERMISSIONS.MANAGE_ORGANIZATION) && (
             <RoleManagement
               roles={roles}
               onCreateRoleClick={() => setIsCreateRoleModalOpen(true)}
@@ -347,8 +359,9 @@ export default function OrganizationDashboard() {
             />
           )}
 
+        {/* Keeping permissions for future use */}
         {activeTab === "Policies" &&
-          currentUserPermissions.includes(PERMISSIONS.MANAGE_POLICIES) && (
+          currentUserPermissions.includes(PERMISSIONS.MANAGE_ORGANIZATION) && (
             <div>
               {policy &&
                 policy.map((p) => <PolicyOverview key={p.id} policy={p} />)}

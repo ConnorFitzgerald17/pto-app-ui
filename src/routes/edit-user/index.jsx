@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup"; // Recommended for validation
+
+import orgThunks from "src/state/org/thunks";
 import rolesThunks from "src/state/role/thunks";
 import LoadingSpinner from "src/components/loading-spinner";
 import ConfirmDialog from "src/components/confirm";
@@ -11,50 +13,72 @@ import { decodeAPIMessage } from "src/utils/decode-api-message";
 import { get } from "lodash";
 import { createSuccessToast, createErrorToast } from "src/utils/create-toast";
 import { toastMessages } from "src/constants/toast-messages";
-import {
-  PERMISSIONS,
-  PERMISSION_DESCRIPTIONS,
-} from "src/constants/permissions";
+import { PERMISSIONS } from "src/constants/permissions";
+import userThunks from "src/state/user/thunks";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Role name is required"),
-  description: Yup.string().required("Description is required"),
-  permissions: Yup.array().min(1, "Select at least one permission"),
-  isDefault: Yup.boolean(),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  roleId: Yup.string().required("Role is required"),
+  isVerified: Yup.boolean(),
 });
 
-const EditRole = () => {
+const EditUser = ({ fetchUsers }) => {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [filteredRoles, setFilteredRoles] = useState([]);
   const [error, setError] = useState(false);
-  const { roleId } = useParams();
+  const { userId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log(roleId);
+  console.log(userId);
 
-  const role = useSelector((state) => state.roles.role);
-  const roleLoading = useSelector((state) => state.roles.isLoading);
+  const user = useSelector((state) => state.org.orgUser);
+  const userLoading = useSelector((state) => state.org.isLoading);
+  const roles = useSelector((state) => state.roles.roles);
+  const currentUser = useSelector((state) => state.user.details);
 
   useEffect(() => {
-    dispatch(rolesThunks.getRole({ roleId }));
-  }, [dispatch, roleId]);
+    dispatch(orgThunks.getOrgUser({ data: { userId } }));
+    dispatch(rolesThunks.getRoles());
+  }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (currentUser.userId === userId) {
+      setFilteredRoles(
+        roles.filter((role) =>
+          role.permissions.includes(PERMISSIONS.MANAGE_ORGANIZATION),
+        ),
+      );
+    } else {
+      setFilteredRoles(roles);
+    }
+  }, [currentUser, roles]);
 
   const formik = useFormik({
     initialValues: {
-      name: role?.name || "",
-      description: role?.description || "",
-      permissions: role?.permissions || [],
-      isDefault: role?.isDefault || false,
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+      roleId: user?.role?.roleId || "",
+      isVerified: user?.isVerified || false,
     },
     validationSchema,
     onSubmit: async (values) => {
+      if (JSON.stringify(values) === JSON.stringify(formik.initialValues)) {
+        return;
+      }
       try {
         dispatch(
-          rolesThunks.updateRole(
-            { data: values, roleId },
+          orgThunks.updateOrgUser(
+            { data: values, userId },
             (err) => {
               if (!err) {
-                createSuccessToast(toastMessages.UPDATE_ROLE_SUCCESSFUL);
-                navigate("/organization", { state: { activeTab: "Roles" } });
+                createSuccessToast(toastMessages.UPDATE_USER_SUCCESSFUL);
+                navigate("/organization", { state: { activeTab: "Users" } });
+                dispatch(userThunks.getUser());
                 return;
               }
               setError(decodeAPIMessage(get(err, "response.data.error", "")));
@@ -63,10 +87,10 @@ const EditRole = () => {
           ),
         );
       } catch (error) {
-        createErrorToast(toastMessages.UPDATE_ROLE_ERROR);
+        createErrorToast(toastMessages.UPDATE_USER_ERROR);
       }
     },
-    enableReinitialize: true, // Important for when role data loads
+    enableReinitialize: true,
   });
 
   const handleConfirm = () => {
@@ -74,20 +98,13 @@ const EditRole = () => {
     setIsConfirmDialogOpen(false);
   };
 
-  if (!roleId) {
+  if (!userId) {
     navigate("/organization");
   }
 
-  if (!role || roleLoading) {
+  if (!user || userLoading) {
     return <LoadingSpinner />;
   }
-
-  const availablePermissions = Object.entries(PERMISSIONS).map(
-    ([key, value]) => ({
-      value: value,
-      label: PERMISSION_DESCRIPTIONS[key],
-    }),
-  );
 
   return (
     <>
@@ -101,10 +118,9 @@ const EditRole = () => {
       <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="mx-auto">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Edit Role</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Edit User</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Update the role settings and permissions. Changes will affect all
-              users assigned to this role.
+              Update the user&apos;s information and role assignment.
             </p>
           </div>
 
@@ -112,110 +128,103 @@ const EditRole = () => {
             <form onSubmit={formik.handleSubmit} className="space-y-6">
               {error && <ErrorBanner message={error} />}
 
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                ></label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.name}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="mt-1 text-sm text-red-600">
-                    {formik.errors.name}
-                  </div>
-                )}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="firstName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.firstName}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                  {formik.touched.firstName && formik.errors.firstName && (
+                    <div className="mt-1 text-sm text-red-600">
+                      {formik.errors.firstName}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="lastName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.lastName}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                  {formik.touched.lastName && formik.errors.lastName && (
+                    <div className="mt-1 text-sm text-red-600">
+                      {formik.errors.lastName}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div>
                 <label
-                  htmlFor="description"
+                  htmlFor="email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Description
+                  Email
                 </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={3}
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.description}
+                  value={formik.values.email}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Describe the purpose and responsibilities of this role"
                 />
-                {formik.touched.description && formik.errors.description && (
+                {formik.touched.email && formik.errors.email && (
                   <div className="mt-1 text-sm text-red-600">
-                    {formik.errors.description}
+                    {formik.errors.email}
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Permissions
+                <label
+                  htmlFor="roleId"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role
                 </label>
-                <div className="space-y-3 bg-gray-50 rounded-md p-4">
-                  {availablePermissions.map((permission) => (
-                    <label key={permission.value} className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          type="checkbox"
-                          name="permissions"
-                          value={permission.value}
-                          checked={formik.values.permissions.includes(
-                            permission.value,
-                          )}
-                          onChange={formik.handleChange}
-                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                        />
-                      </div>
-                      <div className="ml-3">
-                        <span className="text-sm font-medium text-gray-700">
-                          {permission.label}
-                        </span>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          {permission.value}
-                        </p>
-                      </div>
-                    </label>
+                <select
+                  id="roleId"
+                  name="roleId"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.roleId}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                >
+                  <option value="">Select a role</option>
+                  {filteredRoles.map((role) => (
+                    <option key={role.roleId} value={role.roleId}>
+                      {role.name}
+                    </option>
                   ))}
-                </div>
-                {formik.touched.permissions && formik.errors.permissions && (
+                </select>
+                {formik.touched.roleId && formik.errors.roleId && (
                   <div className="mt-1 text-sm text-red-600">
-                    {formik.errors.permissions}
+                    {formik.errors.roleId}
                   </div>
-                )}
-              </div>
-
-              <div>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formik.values.isDefault}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setIsConfirmDialogOpen(true);
-                      } else {
-                        formik.setFieldValue("isDefault", false);
-                      }
-                    }}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                  <span className="ml-2 text-sm text-gray-600">
-                    Set as default role for new users
-                  </span>
-                </label>
-                {role?.isDefault && (
-                  <span className="ml-2 text-sm text-gray-600">
-                    Current default role
-                  </span>
                 )}
               </div>
 
@@ -223,9 +232,7 @@ const EditRole = () => {
                 <button
                   type="button"
                   onClick={() =>
-                    navigate("/organization", {
-                      state: { activeTab: "Roles" },
-                    })
+                    navigate("/organization", { state: { activeTab: "Users" } })
                   }
                   className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
@@ -233,10 +240,10 @@ const EditRole = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={roleLoading}
+                  disabled={userLoading}
                   className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {roleLoading ? "Saving..." : "Save Changes"}
+                  {userLoading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </form>
@@ -247,4 +254,4 @@ const EditRole = () => {
   );
 };
 
-export default EditRole;
+export default EditUser;

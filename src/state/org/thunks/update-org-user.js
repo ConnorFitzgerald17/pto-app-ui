@@ -3,16 +3,16 @@ import orgService from "src/services/org";
 import { createThunk } from "../../create-thunk";
 import orgActions from "../actions";
 
-export const getOrgUsers = createThunk({
-  handler: async () => {
-    const result = await orgService.getOrgUsers();
+export const updateOrgUser = createThunk({
+  handler: async ({ args }) => {
+    const result = await orgService.updateOrgUser(args.userId, args.data);
 
-    const orgUsers = result.data;
+    const updatedOrgUser = result.data;
     return {
-      orgUsers,
+      updatedOrgUser,
     };
   },
   onStart: [() => orgActions.setLoading(true)],
-  onSuccess: [orgActions.setOrgUsers],
+  onSuccess: [orgActions.setOrgUser],
   onFailure: [() => orgActions.setLoading(false)],
 });

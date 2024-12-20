@@ -1,6 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from "src/components/ui/tooltip";
 
 const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
+  const currentUser = useSelector((state) => state.user.details);
+
   return (
     <div>
       <h2 className="mb-4 text-lg font-medium text-gray-900">Active Users</h2>
@@ -60,15 +70,38 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
                   </span>
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                  <button className="text-indigo-600 hover:text-indigo-900">
-                    Edit
-                  </button>
-                  <button
-                    className="ml-4 text-red-600 hover:text-red-900"
-                    onClick={() => handleOpenDeleteUser(user.userId)}
+                  <Link
+                    to={`/organization/edit-user/${user.userId}`}
+                    className="text-indigo-600 hover:text-indigo-900"
                   >
-                    Remove
-                  </button>
+                    Edit
+                  </Link>
+                  {currentUser.userId === user.userId ? (
+                    <>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              className="ml-4 text-gray-600 hover:text-gray-900 cursor-not-allowed"
+                              disabled
+                            >
+                              Remove
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>You cannot remove yourself</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </>
+                  ) : (
+                    <button
+                      className="ml-4 text-red-600 hover:text-red-900"
+                      onClick={() => handleOpenDeleteUser(user.userId)}
+                    >
+                      Remove
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -6,6 +6,13 @@ import * as Yup from "yup"; // Recommended for validation
 import rolesThunks from "src/state/role/thunks";
 import LoadingSpinner from "src/components/loading-spinner";
 import ConfirmDialog from "src/components/confirm";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from "src/components/ui/tooltip";
+
 import ErrorBanner from "src/components/error-banner";
 import { decodeAPIMessage } from "src/utils/decode-api-message";
 import { get } from "lodash";
@@ -32,7 +39,7 @@ const EditRole = () => {
 
   const role = useSelector((state) => state.roles.role);
   const roleLoading = useSelector((state) => state.roles.isLoading);
-
+  const currentUser = useSelector((state) => state.user.details);
   useEffect(() => {
     dispatch(rolesThunks.getRole({ roleId }));
   }, [dispatch, roleId]);
@@ -107,6 +114,11 @@ const EditRole = () => {
                   Current default role
                 </span>
               )}
+              {currentUser.role.roleId === role.roleId && (
+                <span className="ml-2 text-sm text-blue-800 bg-blue-100 rounded-md px-2 py-1">
+                  Your current role
+                </span>
+              )}
             </h1>
             <p className="mt-2 text-sm text-gray-600">
               Update the role settings and permissions. Changes will affect all
@@ -171,28 +183,69 @@ const EditRole = () => {
                 </label>
                 <div className="space-y-3 bg-gray-50 rounded-md p-4">
                   {availablePermissions.map((permission) => (
-                    <label key={permission.value} className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          type="checkbox"
-                          name="permissions"
-                          value={permission.value}
-                          checked={formik.values.permissions.includes(
-                            permission.value,
-                          )}
-                          onChange={formik.handleChange}
-                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                        />
-                      </div>
-                      <div className="ml-3">
-                        <span className="text-sm font-medium text-gray-700">
-                          {permission.label}
-                        </span>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          {permission.value}
-                        </p>
-                      </div>
-                    </label>
+                    <>
+                      {currentUser.role.roleId === role.roleId &&
+                      permission.value === PERMISSIONS.MANAGE_ORGANIZATION ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <label
+                                key={permission.value}
+                                className="flex items-start opacity-50 cursor-not-allowed"
+                              >
+                                <div className="flex items-center h-5">
+                                  <input
+                                    type="checkbox"
+                                    name="permissions"
+                                    value={permission.value}
+                                    checked={true}
+                                    disabled
+                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                  />
+                                </div>
+                                <div className="ml-3">
+                                  <span className="text-sm font-medium text-gray-700">
+                                    {permission.label}
+                                  </span>
+                                  <p className="text-xs text-gray-500 mt-0.5">
+                                    {permission.value}
+                                  </p>
+                                </div>
+                              </label>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>You cannot change this permission</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        <label
+                          key={permission.value}
+                          className="flex items-center cursor-pointer"
+                        >
+                          <div className="flex items-center h-5">
+                            <input
+                              type="checkbox"
+                              name="permissions"
+                              value={permission.value}
+                              checked={formik.values.permissions.includes(
+                                permission.value,
+                              )}
+                              onChange={formik.handleChange}
+                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                          </div>
+                          <div className="ml-3">
+                            <span className="text-sm font-medium text-gray-700">
+                              {permission.label}
+                            </span>
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              {permission.value}
+                            </p>
+                          </div>
+                        </label>
+                      )}
+                    </>
                   ))}
                 </div>
                 {formik.touched.permissions && formik.errors.permissions && (
@@ -203,7 +256,7 @@ const EditRole = () => {
               </div>
 
               <div>
-                <label className="flex items-center">
+                <label className="flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formik.values.isDefault}

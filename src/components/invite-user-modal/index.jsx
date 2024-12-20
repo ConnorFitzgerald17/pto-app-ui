@@ -28,6 +28,7 @@ const initialValues = {
 const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
   const dispatch = useDispatch();
   const roles = useSelector((state) => state.roles.dropdownRoles);
+  const isLoading = useSelector((state) => state.user.isLoading);
   const [error, setError] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -92,7 +93,7 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({ isSubmitting, errors, touched }) => (
+              {({ errors, touched }) => (
                 <Form className="mt-5 space-y-4">
                   {error && <ErrorBanner message={error} />}
 
@@ -146,10 +147,10 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
                   <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                     <button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isLoading}
                       className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                     >
-                      {isSubmitting ? "Sending..." : "Send Invitation"}
+                      {isLoading ? "Sending..." : "Send Invitation"}
                     </button>
                     <button
                       type="button"
