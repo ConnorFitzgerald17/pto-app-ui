@@ -1,19 +1,34 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import orgThunks from "src/state/org/thunks";
+import rolesThunks from "src/state/role/thunks";
+import policyThunks from "src/state/policy/thunks";
+
+import PolicyOverview from "src/components/policy-overview";
+import InviteUserModal from "src/components/invite-user-modal";
+import {
+  PERMISSIONS,
+  PERMISSION_DESCRIPTIONS,
+} from "src/constants/permissions";
 
 export default function OrganizationDashboard() {
   const orgUsers = useSelector((state) => state.org.orgUsers);
+  const roles = useSelector((state) => state.roles.roles);
+  const dropdownRoles = useSelector((state) => state.roles.dropdownRoles);
+  const policy = useSelector((state) => state.policy.policy);
   const orgLoading = useSelector((state) => state.org.isLoading);
   const dispatch = useDispatch();
+  const currentUserPermissions = useSelector(
+    (state) => state.user.details?.role?.permissions || [],
+  );
+
+  console.log(dropdownRoles);
 
   useEffect(() => {
     dispatch(orgThunks.getOrgUsers({}));
+    dispatch(rolesThunks.getRoles({}));
+    dispatch(policyThunks.getPolicy({}));
   }, [dispatch]);
-
-  console.log("====================================");
-  console.log(orgUsers);
-  console.log("====================================");
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
@@ -23,6 +38,10 @@ export default function OrganizationDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <InviteUserModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+      />
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -136,46 +155,40 @@ export default function OrganizationDashboard() {
         </div>
       )}
 
-      {/* Invite Modal */}
-      {isInviteModalOpen && (
-        <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
-            <div
-              className="fixed inset-0 transition-opacity"
-              aria-hidden="true"
-            >
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
+      {currentUserPermissions.includes(PERMISSIONS.MANAGE_ROLES) && (
+        <>
+          <hr className="my-8" />
+
+          <div className="mt-12">
+            <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Invite New User
-                </h3>
-                <div className="mt-2">
-                  <input
-                    type="email"
-                    placeholder="Email address"
-                    className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
-                  />
-                  <select className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500">
-                    <option>Admin</option>
-                    <option>Editor</option>
-                    <option>Viewer</option>
-                  </select>
-                </div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Role Management
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Manage roles and their permissions
+                </p>
               </div>
-              <div className="mt-5 sm:mt-6">
-                <button
-                  type="button"
-                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                  onClick={() => setIsInviteModalOpen(false)}
-                >
-                  Send Invitation
-                </button>
-              </div>
+              <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Create Role
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {roles &&
+                roles.map((role) => <RoleCard key={role.id} role={role} />)}
             </div>
           </div>
-        </div>
+        </>
+      )}
+
+      {currentUserPermissions.includes(PERMISSIONS.MANAGE_POLICIES) && (
+        <>
+          <hr className="my-8" />
+
+          {policy &&
+            policy.map((p) => <PolicyOverview key={p.id} policy={p} />)}
+        </>
       )}
     </div>
   );
@@ -187,3 +200,55 @@ const StatsCard = ({ title, value }) => (
     <div className="mt-2 text-3xl font-semibold text-gray-900">{value}</div>
   </div>
 );
+
+const RoleCard = ({ role }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div className="rounded-lg bg-white p-6 shadow">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-medium text-gray-900">{role.name}</h3>
+        <button className="text-sm text-indigo-600 hover:text-indigo-900">
+          Edit Role
+        </button>
+      </div>
+      <div className="mt-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-medium text-gray-500">Permissions:</h4>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs text-indigo-600 hover:text-indigo-900"
+          >
+            {isExpanded ? "Show less" : "Show details"}
+          </button>
+        </div>
+        {isExpanded ? (
+          <div className="mt-3 space-y-2">
+            {role.permissions.map((permission) => (
+              <div key={permission} className="rounded-lg bg-gray-50 p-3">
+                <div className="font-medium text-sm text-gray-900">
+                  {permission}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {PERMISSION_DESCRIPTIONS[permission] ||
+                    "Permission description not available"}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {role.permissions.map((permission) => (
+              <span
+                key={permission}
+                className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800"
+              >
+                {permission}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
