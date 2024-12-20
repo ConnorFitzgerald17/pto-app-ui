@@ -38,7 +38,7 @@ export const createRequest = (method, endpoint, data) => {
       });
     }
     case "DELETE": {
-      return axios.delete(`${endpoint}/${data}`, {
+      return axios.delete(`${apiBase}/${endpoint}/${data}`, {
         headers: defaultHeaders,
         withCredentials: true,
       });

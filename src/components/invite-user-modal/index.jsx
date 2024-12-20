@@ -25,7 +25,7 @@ const initialValues = {
   role: "",
 };
 
-const InviteUserModal = ({ isOpen, onClose }) => {
+const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
   const dispatch = useDispatch();
   const roles = useSelector((state) => state.roles.dropdownRoles);
   const [error, setError] = useState(false);
@@ -40,6 +40,7 @@ const InviteUserModal = ({ isOpen, onClose }) => {
               createSuccessToast(toastMessages.INVITE_SUCCESSFUL);
               resetForm();
               onClose();
+              fetchUsers();
               return;
             }
             setError(decodeAPIMessage(get(err, "response.data.error", "")));

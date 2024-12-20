@@ -3,9 +3,10 @@ import userService from "src/services/user";
 import { createThunk } from "../../create-thunk";
 import userActions from "../actions";
 
-export const invite = createThunk({
+export const resendInvite = createThunk({
   handler: async ({ args }) => {
-    const result = await userService.invite(args.data);
+    const { inviteId } = args.data;
+    const result = await userService.resendInvite({ inviteId });
 
     return result.data;
   },

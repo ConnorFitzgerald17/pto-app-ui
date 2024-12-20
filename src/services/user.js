@@ -53,6 +53,17 @@ const invite = ({ email, role, organizationId }) => {
   });
 };
 
+const resendInvite = ({ inviteId }) => {
+  return createRequest("POST", `user/invite/resend`, {
+    inviteId,
+  });
+};
+
+const deleteInvite = ({ inviteId }) => {
+  console.log("inviteId", inviteId);
+  return createRequest("DELETE", `user/invite`, inviteId);
+};
+
 const registerFromInvite = ({ token, password, firstName, lastName }) => {
   return createRequest("POST", `user/register-invite`, {
     token,
@@ -72,6 +83,8 @@ const userService = {
   reset,
   invite,
   registerFromInvite,
+  resendInvite,
+  deleteInvite,
 };
 
 export default userService;

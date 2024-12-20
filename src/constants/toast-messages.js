@@ -5,4 +5,9 @@ export const toastMessages = {
   VERIFY_RESEND_SUCCESSFUL: "Verification email has been resent",
   ERROR: "An error has occured, please try again",
   INVITE_SUCCESSFUL: "Invitation sent successfully",
+  INVITE_RESENT_SUCCESSFUL: "Invitation resent successfully",
+  INVITE_DELETED_SUCCESSFUL: "Invitation deleted successfully",
+  INVITE_ERROR: "Failed to send invitation",
+  INVITE_RESEND_ERROR: "Failed to resend invitation",
+  INVITE_DELETE_ERROR: "Failed to delete invitation",
 };

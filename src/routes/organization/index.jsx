@@ -1,27 +1,52 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { createSuccessToast, createErrorToast } from "src/utils/create-toast";
+import { toastMessages } from "src/constants/toast-messages";
+
 import orgThunks from "src/state/org/thunks";
 import rolesThunks from "src/state/role/thunks";
 import policyThunks from "src/state/policy/thunks";
+import userThunks from "src/state/user/thunks";
+
 import PolicyOverview from "src/components/policy-overview";
 import InviteUserModal from "src/components/invite-user-modal";
 import LoadingSpinner from "src/components/loading-spinner";
-import {
-  PERMISSIONS,
-  PERMISSION_DESCRIPTIONS,
-} from "src/constants/permissions";
+import DeleteConfirmDialog from "src/components/delete-confirm";
+import RoleCard from "src/components/role-card";
+import StatsCard from "src/components/stats-card";
+
+import { PERMISSIONS } from "src/constants/permissions";
 import {
   BuildingOfficeIcon,
   CreditCardIcon,
   UserIcon,
   UsersIcon,
+  UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 const tabs = [
   { name: "Active Users", href: "#active", icon: UsersIcon, current: true },
-  { name: "Pending Invites", href: "#pending", icon: UserIcon, current: false },
-  { name: "Roles", href: "#roles", icon: BuildingOfficeIcon, current: false },
-  { name: "Policies", href: "#policies", icon: CreditCardIcon, current: false },
+  {
+    name: "Pending Invites",
+    href: "#pending",
+    icon: UserPlusIcon,
+    current: false,
+  },
+  {
+    name: "Roles",
+    href: "#roles",
+    icon: BuildingOfficeIcon,
+    current: false,
+    permission: PERMISSIONS.MANAGE_ROLES,
+  },
+  {
+    name: "Policies",
+    href: "#policies",
+    icon: CreditCardIcon,
+    current: false,
+    permission: PERMISSIONS.MANAGE_POLICIES,
+  },
 ];
 
 function classNames(...classes) {
@@ -46,17 +71,83 @@ export default function OrganizationDashboard() {
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Active Users");
+  const [isResending, setIsResending] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [inviteIdToDelete, setInviteIdToDelete] = useState(null);
+  const [filteredTabs, setFilteredTabs] = useState(tabs);
+
+  useEffect(() => {
+    setFilteredTabs(
+      tabs.filter(
+        (tab) =>
+          !tab.permission || currentUserPermissions.includes(tab.permission),
+      ),
+    );
+  }, [currentUserPermissions]);
 
   if (orgLoading) {
     return <LoadingSpinner />;
   }
 
+  const handleFetchUsers = () => {
+    dispatch(orgThunks.getOrgUsers({}));
+  };
+
+  // TODO: actually show toast when delete is confirmed from backend
+  const handleDeleteInvite = async (inviteId) => {
+    try {
+      dispatch(userThunks.deleteInvite({ data: { inviteId } }));
+      createSuccessToast(toastMessages.INVITE_DELETED_SUCCESSFUL);
+    } catch (error) {
+      createErrorToast(toastMessages.INVITE_DELETE_ERROR);
+    } finally {
+      setIsDeleteConfirmOpen(false);
+      setInviteIdToDelete(null);
+      dispatch(orgThunks.getOrgUsers({}));
+    }
+  };
+
+  // TODO: actually show toast when resend is confirmed from backend
+  const handleResendInvite = (inviteId) => {
+    if (isResending) return;
+
+    setIsResending(true);
+    try {
+      dispatch(userThunks.resendInvite({ data: { inviteId } }));
+      createSuccessToast(toastMessages.INVITE_RESENT_SUCCESSFUL);
+    } catch (error) {
+      createErrorToast(toastMessages.INVITE_RESEND_ERROR);
+    } finally {
+      // Add a small delay before allowing another click
+      setTimeout(() => {
+        setIsResending(false);
+      }, 2000); // 2 second delay
+    }
+  };
+
+  const handleDeleteModalOpen = (inviteId) => {
+    setIsDeleteConfirmOpen(true);
+    setInviteIdToDelete(inviteId);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      {/* Invite User Modal */}
       <InviteUserModal
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
+        fetchUsers={handleFetchUsers}
       />
+
+      {/* Delete Confirm Dialog */}
+      <DeleteConfirmDialog
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={() => handleDeleteInvite(inviteIdToDelete)}
+        title="Delete Invite"
+        message="Are you sure you want to delete this invite? This action cannot be undone."
+      />
+
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -80,18 +171,27 @@ export default function OrganizationDashboard() {
         <StatsCard
           title="Total Users"
           value={orgUsers ? orgUsers.users?.length : 0}
+          icon={UsersIcon}
+          iconColor="text-indigo-500"
+          iconBgColor="bg-indigo-50"
         />
         <StatsCard
           title="Active Users"
           value={
             orgUsers ? orgUsers.users?.filter((u) => u.isVerified).length : 0
           }
+          icon={UserIcon}
+          iconColor="text-emerald-500"
+          iconBgColor="bg-emerald-50"
         />
         <StatsCard
           title="Pending Invites"
           value={
             orgUsers ? orgUsers.invites?.filter((u) => !u.isVerified).length : 0
           }
+          icon={UserPlusIcon}
+          iconColor="text-indigo-500"
+          iconBgColor="bg-indigo-50"
         />
       </div>
 
@@ -112,7 +212,7 @@ export default function OrganizationDashboard() {
         <div className="hidden sm:block">
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
-              {tabs.map((tab) => (
+              {filteredTabs.map((tab) => (
                 <button
                   key={tab.name}
                   onClick={() => setActiveTab(tab.name)}
@@ -291,10 +391,21 @@ export default function OrganizationDashboard() {
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          <button className="text-indigo-600 hover:text-indigo-900">
+                          <button
+                            onClick={() => handleResendInvite(user.inviteId)}
+                            disabled={isResending}
+                            className={` ${
+                              isResending
+                                ? "cursor-not-allowed text-gray-500 hover:text-gray-500"
+                                : "text-indigo-600 hover:text-indigo-900"
+                            }`}
+                          >
                             Resend
                           </button>
-                          <button className="ml-4 text-red-600 hover:text-red-900">
+                          <button
+                            onClick={() => handleDeleteModalOpen(user.inviteId)}
+                            className="ml-4 text-red-600 hover:text-red-900"
+                          >
                             Delete
                           </button>
                         </td>
@@ -324,7 +435,9 @@ export default function OrganizationDashboard() {
               </div>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {roles &&
-                  roles.map((role) => <RoleCard key={role.id} role={role} />)}
+                  roles.map((role) => (
+                    <RoleCard key={role.roleId} role={role} />
+                  ))}
               </div>
             </div>
           )}
@@ -356,62 +469,3 @@ export default function OrganizationDashboard() {
     </div>
   );
 }
-
-const StatsCard = ({ title, value }) => (
-  <div className="rounded-lg bg-white p-6 shadow">
-    <div className="text-sm font-medium text-gray-500">{title}</div>
-    <div className="mt-2 text-3xl font-semibold text-gray-900">{value}</div>
-  </div>
-);
-
-const RoleCard = ({ role }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-gray-900">{role.name}</h3>
-        <button className="text-sm text-indigo-600 hover:text-indigo-900">
-          Edit Role
-        </button>
-      </div>
-      <div className="mt-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-sm font-medium text-gray-500">Permissions:</h4>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-xs text-indigo-600 hover:text-indigo-900"
-          >
-            {isExpanded ? "Show less" : "Show details"}
-          </button>
-        </div>
-        {isExpanded ? (
-          <div className="mt-3 space-y-2">
-            {role.permissions.map((permission) => (
-              <div key={permission} className="rounded-lg bg-gray-50 p-3">
-                <div className="font-medium text-sm text-gray-900">
-                  {permission}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {PERMISSION_DESCRIPTIONS[permission] ||
-                    "Permission description not available"}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {role.permissions.map((permission) => (
-              <span
-                key={permission}
-                className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800"
-              >
-                {permission}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
