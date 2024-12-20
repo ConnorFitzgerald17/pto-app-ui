@@ -13,8 +13,11 @@ import PolicyOverview from "src/components/policy-overview";
 import InviteUserModal from "src/components/invite-user-modal";
 import LoadingSpinner from "src/components/loading-spinner";
 import DeleteConfirmDialog from "src/components/delete-confirm";
-import RoleCard from "src/components/role-card";
 import StatsCard from "src/components/stats-card";
+import ActiveUsersTable from "src/components/active-users-table";
+import PendingInvites from "src/components/pending-invites";
+import RoleManagement from "src/components/role-table";
+import NoContentState from "src/components/no-users";
 
 import { PERMISSIONS } from "src/constants/permissions";
 import {
@@ -244,202 +247,23 @@ export default function OrganizationDashboard() {
         {activeTab === "Active Users" &&
           orgUsers &&
           orgUsers.users?.length > 0 && (
-            <div>
-              <h2 className="mb-4 text-lg font-medium text-gray-900">
-                Active Users
-              </h2>
-              <div className="overflow-hidden rounded-lg bg-white shadow">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Name
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Role
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
-                    {orgUsers.users?.map((user) => (
-                      <tr key={user.userId}>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 flex-shrink-0">
-                              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-                                {user.firstName.charAt(0)}
-                              </span>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {`${user.firstName} ${user.lastName}`}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          {user.email}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          {user.role.name}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          <span
-                            className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                              user.isVerified
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {user.isVerified ? "Active" : "Pending"}
-                          </span>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          <button className="text-indigo-600 hover:text-indigo-900">
-                            Edit
-                          </button>
-                          <button className="ml-4 text-red-600 hover:text-red-900">
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <ActiveUsersTable users={orgUsers.users} />
           )}
 
         {activeTab === "Pending Invites" &&
           orgUsers &&
           orgUsers.invites?.length > 0 && (
-            <div>
-              <h2 className="mb-4 text-lg font-medium text-gray-900">
-                Pending Invites
-              </h2>
-              <div className="overflow-hidden rounded-lg bg-white shadow">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Name
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Role
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
-                    {orgUsers.invites?.map((user) => (
-                      <tr key={user.email}>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 flex-shrink-0">
-                              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="w-6 h-6 text-gray-500"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                                  />
-                                </svg>
-                              </span>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                Invited User
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          {user.email}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          {user.role}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          <span
-                            className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 bg-yellow-100 text-yellow-800`}
-                          >
-                            Invited
-                          </span>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                          <button
-                            onClick={() => handleResendInvite(user.inviteId)}
-                            disabled={isResending}
-                            className={` ${
-                              isResending
-                                ? "cursor-not-allowed text-gray-500 hover:text-gray-500"
-                                : "text-indigo-600 hover:text-indigo-900"
-                            }`}
-                          >
-                            Resend
-                          </button>
-                          <button
-                            onClick={() => handleDeleteModalOpen(user.inviteId)}
-                            className="ml-4 text-red-600 hover:text-red-900"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <PendingInvites
+              invites={orgUsers.invites}
+              handleResendInvite={handleResendInvite}
+              handleDeleteModalOpen={handleDeleteModalOpen}
+              isResending={isResending}
+            />
           )}
 
         {activeTab === "Roles" &&
           currentUserPermissions.includes(PERMISSIONS.MANAGE_ROLES) && (
-            <div>
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900">
-                    Role Management
-                  </h2>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Manage roles and their permissions
-                  </p>
-                </div>
-                <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                  Create Role
-                </button>
-              </div>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {roles &&
-                  roles.map((role) => (
-                    <RoleCard key={role.roleId} role={role} />
-                  ))}
-              </div>
-            </div>
+            <RoleManagement roles={roles} />
           )}
 
         {activeTab === "Policies" &&
@@ -453,17 +277,10 @@ export default function OrganizationDashboard() {
         {/* No Content State */}
         {((activeTab === "Active Users" && !orgUsers?.users?.length) ||
           (activeTab === "Pending Invites" && !orgUsers?.invites?.length)) && (
-          <div className="rounded-lg bg-white p-8 text-center shadow">
-            <p className="text-gray-500">
-              No {activeTab.toLowerCase()} found in your organization.
-            </p>
-            <button
-              onClick={() => setIsInviteModalOpen(true)}
-              className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Invite User
-            </button>
-          </div>
+          <NoContentState
+            activeTab={activeTab}
+            onInviteClick={() => setIsInviteModalOpen(true)}
+          />
         )}
       </div>
     </div>

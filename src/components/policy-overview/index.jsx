@@ -1,4 +1,6 @@
 import { format } from "date-fns";
+import { Disclosure, Transition } from "@headlessui/react";
+import { ChevronUpIcon } from "@heroicons/react/20/solid";
 
 const PolicyOverview = ({ policy }) => {
   if (!policy) {
@@ -33,67 +35,151 @@ const PolicyOverview = ({ policy }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-800">{name}</h2>
-          <p className="text-gray-600">{description}</p>
-        </div>
-        <span
-          className={`px-3 py-1 rounded-full text-sm font-medium ${
-            status === "ACTIVE"
-              ? "bg-green-100 text-green-800"
-              : "bg-gray-100 text-gray-800"
-          }`}
-        >
-          {status}
-        </span>
-      </div>
+    <Disclosure>
+      {({ open }) => (
+        <div className="max-w-2xl mx-auto">
+          <Disclosure.Button className="w-full flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50">
+            <div className="flex items-center space-x-3">
+              <h2 className="text-lg font-semibold text-gray-800">{name}</h2>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  status === "ACTIVE"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {status}
+              </span>
+            </div>
+            <ChevronUpIcon
+              className={`${
+                open ? "transform rotate-180" : ""
+              } w-5 h-5 text-gray-500`}
+            />
+          </Disclosure.Button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Accrual Rules Card */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            Accrual Rules
-          </h3>
-          <div className="space-y-2 text-sm">
-            <p>Frequency: {frequency}</p>
-            <p>Amount: {amount.toFixed(2)} days</p>
-            <p>Max Balance: {maxBalance} days</p>
-          </div>
-        </div>
+          <Transition
+            enter="transition duration-100 ease-out"
+            enterFrom="transform scale-95 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-75 ease-out"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-95 opacity-0"
+          >
+            <Disclosure.Panel className="mt-2 bg-white rounded-lg shadow-md p-6">
+              <p className="text-sm text-gray-600 mb-6">{description}</p>
 
-        {/* Carry Over Card */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-medium text-gray-800 mb-2">Carry Over</h3>
-          <div className="space-y-2 text-sm">
-            <p>Allowed: {allowed ? "Yes" : "No"}</p>
-            <p>Max Days: {maxDays}</p>
-            <p>Expires: {formatDate(expiryDate)}</p>
-          </div>
-        </div>
+              <div className="grid grid-cols-1 gap-4">
+                {/* Accrual Rules Card */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <h3 className="text-sm font-medium text-gray-800 mb-3">
+                    Accrual Rules
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Frequency
+                      </dt>
+                      <dd className="text-sm text-gray-900">{frequency}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Amount
+                      </dt>
+                      <dd className="text-sm text-gray-900">
+                        {amount.toFixed(2)} days
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Max Balance
+                      </dt>
+                      <dd className="text-sm text-gray-900">
+                        {maxBalance} days
+                      </dd>
+                    </div>
+                  </div>
+                </div>
 
-        {/* Restrictions Card */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            Restrictions
-          </h3>
-          <div className="space-y-2 text-sm">
-            <p>Min Notice: {minDaysNotice} days</p>
-            <p>Max Consecutive: {maxConsecutiveDays} days</p>
-            <p>Blackout Periods: {blackoutDates.length}</p>
-          </div>
-        </div>
-      </div>
+                {/* Carry Over Card */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <h3 className="text-sm font-medium text-gray-800 mb-3">
+                    Carry Over
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Allowed
+                      </dt>
+                      <dd className="text-sm text-gray-900">
+                        {allowed ? "Yes" : "No"}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Max Days
+                      </dt>
+                      <dd className="text-sm text-gray-900">{maxDays}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Expires
+                      </dt>
+                      <dd className="text-sm text-gray-900">
+                        {formatDate(expiryDate)}
+                      </dd>
+                    </div>
+                  </div>
+                </div>
 
-      <button
-        className="mt-6 inline-flex items-center px-4 py-2 border border-transparent 
-                   text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 
-                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        Edit Policy Details
-      </button>
-    </div>
+                {/* Restrictions Card */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <h3 className="text-sm font-medium text-gray-800 mb-3">
+                    Restrictions
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Min Notice
+                      </dt>
+                      <dd className="text-sm text-gray-900">
+                        {minDaysNotice} days
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Max Consecutive
+                      </dt>
+                      <dd className="text-sm text-gray-900">
+                        {maxConsecutiveDays} days
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-medium text-gray-500">
+                        Blackout Periods
+                      </dt>
+                      <dd className="text-sm text-gray-900">
+                        {blackoutDates.length}
+                      </dd>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent 
+                             text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 
+                             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Edit Policy Details
+                </button>
+              </div>
+            </Disclosure.Panel>
+          </Transition>
+        </div>
+      )}
+    </Disclosure>
   );
 };
 

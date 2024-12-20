@@ -5,49 +5,54 @@ const RoleCard = ({ role }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-gray-900">{role.name}</h3>
-        <button className="text-sm text-indigo-600 hover:text-indigo-900">
-          Edit Role
-        </button>
-      </div>
-      <div className="mt-4">
+    <div className="rounded-md border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md">
+      <div className="p-4">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-medium text-gray-500">Permissions:</h4>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-xs text-indigo-600 hover:text-indigo-900"
-          >
-            {isExpanded ? "Show less" : "Show details"}
+          <h3 className="text-base font-semibold text-gray-900">{role.name}</h3>
+          <button className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50">
+            Edit Role
           </button>
         </div>
-        {isExpanded ? (
-          <div className="mt-3 space-y-2">
-            {role.permissions.map((permission) => (
-              <div key={permission} className="rounded-lg bg-gray-50 p-3">
-                <div className="font-medium text-sm text-gray-900">
+
+        <div className="mt-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-medium text-gray-500">Permissions</h4>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-xs font-medium text-gray-500 hover:text-gray-700"
+            >
+              {isExpanded ? "− Less" : "+ More"}
+            </button>
+          </div>
+
+          {isExpanded ? (
+            <div className="mt-2 space-y-1.5">
+              {role.permissions.map((permission) => (
+                <div key={permission} className="rounded bg-gray-50 px-3 py-2">
+                  <div className="text-xs font-medium text-gray-700">
+                    {permission}
+                  </div>
+                  {PERMISSION_DESCRIPTIONS[permission] && (
+                    <div className="mt-0.5 text-xs text-gray-500">
+                      {PERMISSION_DESCRIPTIONS[permission]}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {role.permissions.map((permission) => (
+                <span
+                  key={permission}
+                  className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600"
+                >
                   {permission}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {PERMISSION_DESCRIPTIONS[permission] ||
-                    "Permission description not available"}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {role.permissions.map((permission) => (
-              <span
-                key={permission}
-                className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800"
-              >
-                {permission}
-              </span>
-            ))}
-          </div>
-        )}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
