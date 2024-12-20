@@ -5,5 +5,6 @@ export const setUser = ({ state, action }) => {
     isLoading: false,
     token: action.payload.token,
     details: action.payload.details,
+    role: action.payload.role,
   };
 };

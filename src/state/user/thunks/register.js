@@ -9,10 +9,11 @@ export const register = createThunk({
 
     const token = result.data.token;
     const details = result.data.user;
-
+    const role = result.data.role;
     return {
       token,
       details,
+      role,
     };
   },
   onStart: [() => userActions.setLoading(true)],

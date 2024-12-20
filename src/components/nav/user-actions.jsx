@@ -1,6 +1,10 @@
 import { BellIcon } from "@heroicons/react/24/outline";
-
+import { useSelector } from "react-redux";
+import { useAuth } from "src/hooks/use-auth";
 export default function UserActions() {
+  useAuth({ unauthRedirect: "/login" });
+  const userDetails = useSelector((state) => state.user.details);
+
   return (
     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
       <button
@@ -12,7 +16,7 @@ export default function UserActions() {
         <BellIcon className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      <div className="relative ml-3">test</div>
+      <div className="relative ml-3">{userDetails.firstName}</div>
     </div>
   );
 }

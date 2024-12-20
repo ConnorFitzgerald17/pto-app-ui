@@ -10,7 +10,7 @@ import RegisterRoute from "./routes/register";
 import ResetRoute from "./routes/reset";
 import RootRoute from "./routes/root";
 import VerifyRoute from "./routes/verify";
-
+import OrganizationRoute from "./routes/organization";
 const App = () => {
   return (
     <>
@@ -28,6 +28,9 @@ const App = () => {
         <Route path="/reset/:token" element={<ResetRoute />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<RootRoute />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/organization" element={<OrganizationRoute />} />
         </Route>
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>

@@ -11,6 +11,7 @@ export const initialState = {
   isLoading: true,
   details: null,
   token: null,
+  role: null,
 };
 
 const actionMap = {

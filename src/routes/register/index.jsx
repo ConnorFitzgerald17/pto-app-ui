@@ -27,6 +27,8 @@ const RegisterRoute = () => {
       lastName: "",
       email: "",
       password: "",
+      organizationName: "",
+      domain: "",
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("A first name is required"),
@@ -37,6 +39,10 @@ const RegisterRoute = () => {
       password: Yup.string()
         .min(8, "Password must be at least 8 characters in length.")
         .required("A password is required."),
+      organizationName: Yup.string().required(
+        "An organization name is required",
+      ),
+      domain: Yup.string().required("A domain is required"),
     }),
     onSubmit: async (values) => {
       dispatch(
@@ -118,6 +124,33 @@ const RegisterRoute = () => {
               hasError={formik.touched.password && formik.errors.password}
               error={formik.errors.password}
               placeholder="Password"
+              required
+              className="appearance-none rounded-md relative block w-full"
+            />
+            <Input
+              type="text"
+              id="organizationName"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.organizationName}
+              hasError={
+                formik.touched.organizationName &&
+                formik.errors.organizationName
+              }
+              error={formik.errors.organizationName}
+              placeholder="Organization Name"
+              required
+              className="appearance-none rounded-md relative block w-full"
+            />
+            <Input
+              type="text"
+              id="domain"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.domain}
+              hasError={formik.touched.domain && formik.errors.domain}
+              error={formik.errors.domain}
+              placeholder="Domain"
               required
               className="appearance-none rounded-md relative block w-full"
             />
