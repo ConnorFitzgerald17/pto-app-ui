@@ -10,4 +10,7 @@ export const toastMessages = {
   INVITE_ERROR: "Failed to send invitation",
   INVITE_RESEND_ERROR: "Failed to resend invitation",
   INVITE_DELETE_ERROR: "Failed to delete invitation",
+
+  CREATE_ROLE_SUCCESSFUL: "Role created successfully",
+  CREATE_ROLE_ERROR: "Failed to create role",
 };

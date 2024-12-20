@@ -18,7 +18,7 @@ import ActiveUsersTable from "src/components/active-users-table";
 import PendingInvites from "src/components/pending-invites";
 import RoleManagement from "src/components/role-table";
 import NoContentState from "src/components/no-users";
-
+import CreateRoleModal from "src/components/create-role";
 import { PERMISSIONS } from "src/constants/permissions";
 import {
   BuildingOfficeIcon,
@@ -73,6 +73,7 @@ export default function OrganizationDashboard() {
   }, [dispatch]);
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isCreateRoleModalOpen, setIsCreateRoleModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Active Users");
   const [isResending, setIsResending] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
@@ -94,6 +95,10 @@ export default function OrganizationDashboard() {
 
   const handleFetchUsers = () => {
     dispatch(orgThunks.getOrgUsers({}));
+  };
+
+  const handleFetchRoles = () => {
+    dispatch(rolesThunks.getRoles({}));
   };
 
   // TODO: actually show toast when delete is confirmed from backend
@@ -134,7 +139,7 @@ export default function OrganizationDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen p-6 mt-12">
       {/* Invite User Modal */}
       <InviteUserModal
         isOpen={isInviteModalOpen}
@@ -149,6 +154,12 @@ export default function OrganizationDashboard() {
         onConfirm={() => handleDeleteInvite(inviteIdToDelete)}
         title="Delete Invite"
         message="Are you sure you want to delete this invite? This action cannot be undone."
+      />
+      {/* Create Role Modal */}
+      <CreateRoleModal
+        isOpen={isCreateRoleModalOpen}
+        onClose={() => setIsCreateRoleModalOpen(false)}
+        fetchRoles={handleFetchRoles}
       />
 
       {/* Header */}
@@ -263,7 +274,10 @@ export default function OrganizationDashboard() {
 
         {activeTab === "Roles" &&
           currentUserPermissions.includes(PERMISSIONS.MANAGE_ROLES) && (
-            <RoleManagement roles={roles} />
+            <RoleManagement
+              roles={roles}
+              onCreateRoleClick={() => setIsCreateRoleModalOpen(true)}
+            />
           )}
 
         {activeTab === "Policies" &&

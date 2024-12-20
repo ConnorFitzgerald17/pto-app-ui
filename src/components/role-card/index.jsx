@@ -13,10 +13,13 @@ const RoleCard = ({ role }) => {
             Edit Role
           </button>
         </div>
+        <div>
+          <p className="text-xs text-gray-500">{role.description}</p>
+        </div>
 
         <div className="mt-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-medium text-gray-500">Permissions</h4>
+            <h4 className="text-xs font-medium text-gray-600">Permissions</h4>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-xs font-medium text-gray-500 hover:text-gray-700"

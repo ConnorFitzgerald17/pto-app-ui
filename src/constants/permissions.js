@@ -11,6 +11,8 @@ export const PERMISSIONS = {
   MANAGE_ORGANIZATION: "MANAGE_ORGANIZATION",
 };
 
+export const PERMISSIONS_LIST = Object.values(PERMISSIONS);
+
 export const PERMISSION_DESCRIPTIONS = {
   VIEW_OWN_PTO: "View your own PTO balance and history",
   REQUEST_PTO: "Submit and manage your own PTO requests",

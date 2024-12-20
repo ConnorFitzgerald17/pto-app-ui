@@ -35,10 +35,10 @@ const PolicyOverview = ({ policy }) => {
   };
 
   return (
-    <Disclosure>
+    <Disclosure defaultOpen>
       {({ open }) => (
         <div className="max-w-2xl mx-auto">
-          <Disclosure.Button className="w-full flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50">
+          <Disclosure.Button className="w-full flex justify-between items-center p-4 bg-white rounded-lg shadow-sm hover:bg-gray-100">
             <div className="flex items-center space-x-3">
               <h2 className="text-lg font-semibold text-gray-800">{name}</h2>
               <span

@@ -13,6 +13,8 @@ import RootRoute from "./routes/root";
 import VerifyRoute from "./routes/verify";
 import OrganizationRoute from "./routes/organization";
 import RegisterInviteRoute from "./routes/register-invite";
+import CalendarRoute from "./routes/calendar";
+
 const App = () => {
   return (
     <>
@@ -36,6 +38,9 @@ const App = () => {
           element={<ProtectedRoute permissions={[PERMISSIONS.MANAGE_USERS]} />}
         >
           <Route path="/organization" element={<OrganizationRoute />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/calendar" element={<CalendarRoute />} />
         </Route>
         <Route path="*" element={<NotFoundRoute />} />
       </Routes>
