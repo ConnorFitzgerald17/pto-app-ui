@@ -13,4 +13,8 @@ export const toastMessages = {
 
   CREATE_ROLE_SUCCESSFUL: "Role created successfully",
   CREATE_ROLE_ERROR: "Failed to create role",
+  UPDATE_ROLE_SUCCESSFUL: "Role updated successfully",
+  UPDATE_ROLE_ERROR: "Failed to update role",
+  ROLE_DELETE_SUCCESSFUL: "Role deleted successfully",
+  ROLE_DELETE_ERROR: "Failed to delete role",
 };

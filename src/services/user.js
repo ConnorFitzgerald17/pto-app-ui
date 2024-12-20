@@ -60,7 +60,6 @@ const resendInvite = ({ inviteId }) => {
 };
 
 const deleteInvite = ({ inviteId }) => {
-  console.log("inviteId", inviteId);
   return createRequest("DELETE", `user/invite`, inviteId);
 };
 

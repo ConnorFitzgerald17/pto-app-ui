@@ -15,6 +15,8 @@ import {
   PERMISSIONS_LIST,
   PERMISSION_DESCRIPTIONS,
 } from "src/constants/permissions";
+import { DEFAULT_ROLES } from "src/constants/default-roles";
+
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
@@ -33,9 +35,26 @@ const CreateRoleModal = ({ isOpen, onClose, fetchRoles }) => {
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
 
+  const handleTemplateChange = (e, setValues) => {
+    if (!e.target.value) {
+      setValues(initialValues);
+      return;
+    }
+
+    const selectedRole = DEFAULT_ROLES.find(
+      (role) => role.name === e.target.value,
+    );
+    if (selectedRole) {
+      setValues({
+        name: selectedRole.name,
+        description: selectedRole.description,
+        permissions: selectedRole.permissions,
+      });
+    }
+  };
+
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     try {
-      console.log(values);
       dispatch(
         roleThunks.createRole(
           { data: values },
@@ -97,9 +116,37 @@ const CreateRoleModal = ({ isOpen, onClose, fetchRoles }) => {
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({ isSubmitting, errors, touched, values, setFieldValue }) => (
+              {({
+                isSubmitting,
+                errors,
+                touched,
+                values,
+                setFieldValue,
+                setValues,
+              }) => (
                 <Form className="mt-5 space-y-4">
                   {error && <ErrorBanner message={error} />}
+
+                  <div>
+                    <label
+                      htmlFor="template"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Use Template (Optional)
+                    </label>
+                    <select
+                      id="template"
+                      onChange={(e) => handleTemplateChange(e, setValues)}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    >
+                      <option value="">Select a template</option>
+                      {DEFAULT_ROLES.map((role) => (
+                        <option key={role.name} value={role.name}>
+                          {role.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
                   <div>
                     <label

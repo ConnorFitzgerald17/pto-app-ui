@@ -1,8 +1,8 @@
 import { types } from ".";
 
-export const setRolesLoading = (loading) => {
+export const setRolesLoading = (isLoading) => {
   return {
     type: types.SET_ROLES_LOADING,
-    payload: loading,
+    payload: { isLoading },
   };
 };

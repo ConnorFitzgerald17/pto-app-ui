@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import React from "react";
 import { PERMISSIONS } from "./constants/permissions";
@@ -14,7 +14,7 @@ import VerifyRoute from "./routes/verify";
 import OrganizationRoute from "./routes/organization";
 import RegisterInviteRoute from "./routes/register-invite";
 import CalendarRoute from "./routes/calendar";
-
+import EditRoleRoute from "./routes/edit-role";
 const App = () => {
   return (
     <>
@@ -38,6 +38,18 @@ const App = () => {
           element={<ProtectedRoute permissions={[PERMISSIONS.MANAGE_USERS]} />}
         >
           <Route path="/organization" element={<OrganizationRoute />} />
+        </Route>
+        <Route
+          element={<ProtectedRoute permissions={[PERMISSIONS.MANAGE_ROLES]} />}
+        >
+          <Route
+            path="/organization/edit-role/:roleId"
+            element={<EditRoleRoute />}
+          />
+          <Route
+            path="/organization/edit-role"
+            element={<Navigate to="/organization" replace />}
+          />
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/calendar" element={<CalendarRoute />} />

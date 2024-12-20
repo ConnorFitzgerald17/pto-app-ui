@@ -8,6 +8,9 @@ export const errorMap = {
   "role.create.name.required": "Name is required",
   "role.create.description.required": "Description is required",
   "role.create.permissions.required": "At least one permission is required",
+  "role.delete.default": "Cannot delete default role",
+  "role.update.remove.default":
+    "Cannot remove default status from current default role",
 };
 
 export const decodeAPIMessage = (message) => {

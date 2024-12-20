@@ -3,16 +3,16 @@ import rolesService from "src/services/roles";
 import { createThunk } from "../../create-thunk";
 import rolesActions from "../actions";
 
-export const createRole = createThunk({
+export const getRole = createThunk({
   handler: async ({ args }) => {
-    const result = await rolesService.createRole(args.data);
+    const result = await rolesService.getRole(args.roleId);
 
-    const newRole = result.data;
+    const role = result.data;
     return {
-      newRole,
+      role,
     };
   },
   onStart: [() => rolesActions.setRolesLoading(true)],
-  onSuccess: [() => rolesActions.setRolesLoading(false)],
+  onSuccess: [rolesActions.setRole],
   onFailure: [() => rolesActions.setRolesLoading(false)],
 });

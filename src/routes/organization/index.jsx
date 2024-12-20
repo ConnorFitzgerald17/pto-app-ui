@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import { createSuccessToast, createErrorToast } from "src/utils/create-toast";
 import { toastMessages } from "src/constants/toast-messages";
@@ -61,10 +62,14 @@ export default function OrganizationDashboard() {
   const roles = useSelector((state) => state.roles.roles);
   const policy = useSelector((state) => state.policy.policy);
   const orgLoading = useSelector((state) => state.org.isLoading);
+  const rolesLoading = useSelector((state) => state.roles.isLoading);
+  const policyLoading = useSelector((state) => state.policy.isLoading);
   const dispatch = useDispatch();
   const currentUserPermissions = useSelector(
     (state) => state.user.details?.role?.permissions || [],
   );
+  const location = useLocation();
+  const initialActiveTab = location.state?.activeTab || "Active Users";
 
   useEffect(() => {
     dispatch(orgThunks.getOrgUsers({}));
@@ -74,7 +79,7 @@ export default function OrganizationDashboard() {
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isCreateRoleModalOpen, setIsCreateRoleModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Active Users");
+  const [activeTab, setActiveTab] = useState(initialActiveTab);
   const [isResending, setIsResending] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [inviteIdToDelete, setInviteIdToDelete] = useState(null);
@@ -89,7 +94,7 @@ export default function OrganizationDashboard() {
     );
   }, [currentUserPermissions]);
 
-  if (orgLoading) {
+  if (orgLoading || rolesLoading || policyLoading) {
     return <LoadingSpinner />;
   }
 
@@ -99,6 +104,11 @@ export default function OrganizationDashboard() {
 
   const handleFetchRoles = () => {
     dispatch(rolesThunks.getRoles({}));
+  };
+
+  const handleFetchRolesAndUsers = () => {
+    dispatch(rolesThunks.getRoles({}));
+    dispatch(orgThunks.getOrgUsers({}));
   };
 
   // TODO: actually show toast when delete is confirmed from backend
@@ -277,6 +287,7 @@ export default function OrganizationDashboard() {
             <RoleManagement
               roles={roles}
               onCreateRoleClick={() => setIsCreateRoleModalOpen(true)}
+              handleFetch={handleFetchRolesAndUsers}
             />
           )}
 

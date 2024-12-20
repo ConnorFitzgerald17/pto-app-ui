@@ -3,13 +3,13 @@ import rolesService from "src/services/roles";
 import { createThunk } from "../../create-thunk";
 import rolesActions from "../actions";
 
-export const createRole = createThunk({
+export const deleteRole = createThunk({
   handler: async ({ args }) => {
-    const result = await rolesService.createRole(args.data);
+    const result = await rolesService.deleteRole(args.data);
 
-    const newRole = result.data;
+    const deletedRole = result.data;
     return {
-      newRole,
+      deletedRole,
     };
   },
   onStart: [() => rolesActions.setRolesLoading(true)],

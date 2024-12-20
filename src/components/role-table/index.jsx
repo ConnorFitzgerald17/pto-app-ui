@@ -1,7 +1,7 @@
 import React from "react";
 import RoleCard from "src/components/role-card";
 
-const RoleManagement = ({ roles, onCreateRoleClick }) => {
+const RoleManagement = ({ roles, onCreateRoleClick, handleFetch }) => {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -20,7 +20,9 @@ const RoleManagement = ({ roles, onCreateRoleClick }) => {
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {roles &&
-          roles.map((role) => <RoleCard key={role.roleId} role={role} />)}
+          roles.map((role) => (
+            <RoleCard key={role.roleId} role={role} handleFetch={handleFetch} />
+          ))}
       </div>
     </div>
   );

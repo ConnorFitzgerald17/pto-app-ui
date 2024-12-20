@@ -1,8 +1,8 @@
 import { types } from ".";
 
-export const setPolicyLoading = (loading) => {
+export const setPolicyLoading = (isLoading) => {
   return {
     type: types.SET_POLICY_LOADING,
-    payload: loading,
+    payload: { isLoading },
   };
 };
