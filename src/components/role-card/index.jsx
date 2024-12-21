@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { PERMISSION_DESCRIPTIONS } from "../../constants/permissions";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -9,11 +8,15 @@ import { toastMessages } from "src/constants/toast-messages";
 import { decodeAPIMessage } from "src/utils/decode-api-message";
 import { get } from "lodash";
 import rolesThunks from "src/state/role/thunks";
-
 import { useDispatch } from "react-redux";
+
+import EditRole from "src/components/edit-role";
+
 const RoleCard = ({ role, handleFetch }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [roleId, setRoleId] = useState(null);
   const currentUser = useSelector((state) => state.user.details);
   const dispatch = useDispatch();
   const handleDeleteRole = () => {
@@ -44,6 +47,12 @@ const RoleCard = ({ role, handleFetch }) => {
     }
   };
 
+  const handleCloseEditRole = () => {
+    setIsOpen(false);
+    setRoleId(null);
+    handleFetch();
+  };
+
   return (
     <>
       <DeleteConfirmDialog
@@ -53,6 +62,13 @@ const RoleCard = ({ role, handleFetch }) => {
         title="Delete Role"
         message="Are you sure you want to delete this role? All users with this role will be reassigned to your organization's default role. This action cannot be undone."
       />
+      {roleId && (
+        <EditRole
+          isOpen={isOpen}
+          onClose={handleCloseEditRole}
+          roleId={roleId}
+        />
+      )}
 
       <div className="rounded-md border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md">
         <div className="p-4">
@@ -71,12 +87,15 @@ const RoleCard = ({ role, handleFetch }) => {
               )}
             </h3>
             <div className="flex items-center gap-2">
-              <Link
-                to={`/organization/edit-role/${role.roleId}`}
+              <button
+                onClick={() => {
+                  setRoleId(role.roleId);
+                  setIsOpen(true);
+                }}
                 className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50"
               >
                 <PencilIcon className="h-4 w-4" />
-              </Link>
+              </button>
               {currentUser.role.roleId !== role.roleId && (
                 <button
                   onClick={() => setIsDeleteConfirmOpen(true)}

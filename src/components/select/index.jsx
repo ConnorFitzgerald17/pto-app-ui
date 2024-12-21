@@ -4,7 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "src/components/ui/select";
 
 const SelectMenu = ({ options, value, onChange }) => {
   return (
@@ -12,9 +12,13 @@ const SelectMenu = ({ options, value, onChange }) => {
       <SelectTrigger>
         <SelectValue placeholder="Select an option" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent position="popper" className="w-full">
         {options.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
+          <SelectItem
+            key={option.value}
+            value={option.value}
+            className="w-full cursor-pointer"
+          >
             {option.label}
           </SelectItem>
         ))}

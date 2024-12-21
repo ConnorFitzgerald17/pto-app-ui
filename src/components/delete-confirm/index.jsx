@@ -13,7 +13,7 @@ const DeleteConfirmDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-10">
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-gray-500/75 transition-opacity" />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">

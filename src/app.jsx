@@ -14,8 +14,6 @@ import VerifyRoute from "./routes/verify";
 import OrganizationRoute from "./routes/organization";
 import RegisterInviteRoute from "./routes/register-invite";
 import CalendarRoute from "./routes/calendar";
-import EditRoleRoute from "./routes/edit-role";
-import EditUserRoute from "./routes/edit-user";
 const App = () => {
   return (
     <>
@@ -41,34 +39,6 @@ const App = () => {
           }
         >
           <Route path="/organization" element={<OrganizationRoute />} />
-        </Route>
-        <Route
-          element={
-            <ProtectedRoute permissions={[PERMISSIONS.MANAGE_ORGANIZATION]} />
-          }
-        >
-          <Route
-            path="/organization/edit-role/:roleId"
-            element={<EditRoleRoute />}
-          />
-          <Route
-            path="/organization/edit-role"
-            element={<Navigate to="/organization" replace />}
-          />
-        </Route>
-        <Route
-          element={
-            <ProtectedRoute permissions={[PERMISSIONS.MANAGE_ORGANIZATION]} />
-          }
-        >
-          <Route
-            path="/organization/edit-user/:userId"
-            element={<EditUserRoute />}
-          />
-          <Route
-            path="/organization/edit-user"
-            element={<Navigate to="/organization" replace />}
-          />
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/calendar" element={<CalendarRoute />} />

@@ -7,6 +7,8 @@ export const toastMessages = {
 
   DELETE_USER_SUCCESSFUL: "User deleted successfully",
   DELETE_USER_ERROR: "Failed to delete user",
+  UPDATE_USER_SUCCESSFUL: "User updated successfully",
+  UPDATE_USER_ERROR: "Failed to update user",
 
   INVITE_SUCCESSFUL: "Invitation sent successfully",
   INVITE_RESENT_SUCCESSFUL: "Invitation resent successfully",
