@@ -6,13 +6,30 @@ import {
   SelectValue,
 } from "src/components/ui/select";
 
-const SelectMenu = ({ options, value, onChange }) => {
+const SelectMenu = ({
+  options,
+  value,
+  onChange,
+  optional = false,
+  optionalText = "None",
+  placeholder = "Select an option",
+}) => {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select
+      value={value}
+      onValueChange={onChange}
+      defaultValue=""
+      required={false}
+    >
       <SelectTrigger>
-        <SelectValue placeholder="Select an option" />
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent position="popper" className="w-full">
+        {optional && (
+          <SelectItem value={null} className="w-full cursor-pointer">
+            {optionalText}
+          </SelectItem>
+        )}
         {options.map((option) => (
           <SelectItem
             key={option.value}

@@ -1,13 +1,12 @@
 import { Label } from "src/components/ui/label";
-import { Input } from "src/components/ui/input";
+import { Textarea } from "src/components/ui/textarea";
 
-const InputField = ({ id, label, type, value, onChange, placeholder }) => {
+const TextareaField = ({ id, label, value, onChange, placeholder }) => {
   return (
     <div className="flex flex-col gap-2">
       {label && <Label htmlFor={id}>{label}</Label>}
-      <Input
+      <Textarea
         id={id}
-        type={type}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
@@ -16,4 +15,4 @@ const InputField = ({ id, label, type, value, onChange, placeholder }) => {
   );
 };
 
-export default InputField;
+export default TextareaField;

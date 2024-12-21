@@ -9,6 +9,7 @@ import rolesThunks from "src/state/role/thunks";
 import LoadingSpinner from "src/components/loading-spinner";
 import ErrorBanner from "src/components/error-banner";
 import SelectMenu from "src/components/select";
+import InputField from "src/components/input";
 
 import { decodeAPIMessage } from "src/utils/decode-api-message";
 import { get } from "lodash";
@@ -121,14 +122,12 @@ const EditUser = ({ isOpen, onClose, userId }) => {
               >
                 First Name
               </label>
-              <input
-                type="text"
+              <InputField
                 id="firstName"
                 name="firstName"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.firstName}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {formik.touched.firstName && formik.errors.firstName && (
                 <div className="mt-1 text-sm text-red-600">
@@ -144,14 +143,12 @@ const EditUser = ({ isOpen, onClose, userId }) => {
               >
                 Last Name
               </label>
-              <input
-                type="text"
+              <InputField
                 id="lastName"
                 name="lastName"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.lastName}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {formik.touched.lastName && formik.errors.lastName && (
                 <div className="mt-1 text-sm text-red-600">
@@ -168,14 +165,13 @@ const EditUser = ({ isOpen, onClose, userId }) => {
             >
               Email
             </label>
-            <input
+            <InputField
               type="email"
               id="email"
               name="email"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
             {formik.touched.email && formik.errors.email && (
               <div className="mt-1 text-sm text-red-600">

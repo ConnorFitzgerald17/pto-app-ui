@@ -22,6 +22,7 @@ import PendingInvites from "src/components/pending-invites";
 import RoleManagement from "src/components/role-table";
 import NoContentState from "src/components/no-users";
 import CreateRoleModal from "src/components/create-role";
+
 import { PERMISSIONS } from "src/constants/permissions";
 import {
   BuildingOfficeIcon,

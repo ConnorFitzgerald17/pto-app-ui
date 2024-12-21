@@ -5,6 +5,8 @@ import * as Yup from "yup"; // Recommended for validation
 import rolesThunks from "src/state/role/thunks";
 import LoadingSpinner from "src/components/loading-spinner";
 import ConfirmDialog from "src/components/confirm";
+import InputField from "src/components/input";
+import TextareaField from "src/components/textarea";
 import {
   Tooltip,
   TooltipProvider,
@@ -133,14 +135,12 @@ const EditRole = ({ isOpen, onClose, roleId }) => {
             >
               Role Name
             </label>
-            <input
-              type="text"
+            <InputField
               id="name"
               name="name"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.name}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
             {formik.touched.name && formik.errors.name && (
               <div className="mt-1 text-sm text-red-600">
@@ -156,14 +156,13 @@ const EditRole = ({ isOpen, onClose, roleId }) => {
             >
               Description
             </label>
-            <textarea
+            <TextareaField
               id="description"
               name="description"
               rows={3}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.description}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               placeholder="Describe the purpose and responsibilities of this role"
             />
             {formik.touched.description && formik.errors.description && (
