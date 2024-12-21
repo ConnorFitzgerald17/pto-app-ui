@@ -15,13 +15,14 @@ import userThunks from "src/state/user/thunks";
 import PolicyOverview from "src/components/policy-overview";
 import InviteUserModal from "src/components/invite-user-modal";
 import LoadingSpinner from "src/components/loading-spinner";
-import DeleteConfirmDialog from "src/components/delete-confirm";
+import Confirm from "src/components/confirm";
 import StatsCard from "src/components/stats-card";
 import ActiveUsersTable from "src/components/active-users-table";
 import PendingInvites from "src/components/pending-invites";
 import RoleManagement from "src/components/role-table";
 import NoContentState from "src/components/no-users";
 import CreateRoleModal from "src/components/create-role";
+import CreatePolicyModal from "src/components/create-policy";
 
 import { PERMISSIONS } from "src/constants/permissions";
 import {
@@ -92,6 +93,7 @@ export default function OrganizationDashboard() {
   const [isDeleteUserConfirmOpen, setIsDeleteUserConfirmOpen] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [filteredTabs, setFilteredTabs] = useState(tabs);
+  const [isCreatePolicyModalOpen, setIsCreatePolicyModalOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("activeTab", activeTab);
@@ -215,26 +217,34 @@ export default function OrganizationDashboard() {
       />
 
       {/* Delete Confirm Dialog */}
-      <DeleteConfirmDialog
+      <Confirm
         isOpen={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
         onConfirm={() => handleDeleteInvite(inviteIdToDelete)}
         title="Delete Invite"
         message="Are you sure you want to delete this invite? This action cannot be undone."
+        buttonColor="bg-red-500 hover:bg-red-600"
       />
       {/* Delete User Modal */}
-      <DeleteConfirmDialog
+      <Confirm
         isOpen={isDeleteUserConfirmOpen}
         onClose={handleCloseDeleteUser}
         onConfirm={() => handleDeleteUser(userIdToDelete)}
         title="Delete User"
         message="Are you sure you want to delete this user? This action cannot be undone."
+        buttonColor="bg-red-500 hover:bg-red-600"
       />
       {/* Create Role Modal */}
       <CreateRoleModal
         isOpen={isCreateRoleModalOpen}
         onClose={() => setIsCreateRoleModalOpen(false)}
         fetchRoles={handleFetchRoles}
+      />
+
+      {/* Create Policy Modal */}
+      <CreatePolicyModal
+        isOpen={isCreatePolicyModalOpen}
+        onClose={() => setIsCreatePolicyModalOpen(false)}
       />
 
       {/* Header */}
@@ -363,10 +373,28 @@ export default function OrganizationDashboard() {
         {/* Keeping permissions for future use */}
         {activeTab === "Policies" &&
           currentUserPermissions.includes(PERMISSIONS.MANAGE_ORGANIZATION) && (
-            <div>
-              {policy &&
-                policy.map((p) => <PolicyOverview key={p.id} policy={p} />)}
-            </div>
+            <>
+              <div className="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Leave Policy Management
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Manage leave policies and their rules
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsCreatePolicyModalOpen(true)}
+                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Create Policy
+                </button>
+              </div>
+              <div className="space-y-4">
+                {policy &&
+                  policy.map((p) => <PolicyOverview key={p.id} policy={p} />)}
+              </div>
+            </>
           )}
 
         {/* No Content State */}

@@ -10,9 +10,11 @@ const SelectMenu = ({
   options,
   value,
   onChange,
+  onBlur,
   optional = false,
   optionalText = "None",
   placeholder = "Select an option",
+  error,
 }) => {
   return (
     <Select
@@ -20,6 +22,7 @@ const SelectMenu = ({
       onValueChange={onChange}
       defaultValue=""
       required={false}
+      onBlur={onBlur}
     >
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
@@ -40,6 +43,7 @@ const SelectMenu = ({
           </SelectItem>
         ))}
       </SelectContent>
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </Select>
   );
 };

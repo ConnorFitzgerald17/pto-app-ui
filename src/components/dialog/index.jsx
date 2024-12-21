@@ -6,6 +6,19 @@ import {
   DialogTitle,
 } from "src/components/ui/dialog";
 
+const DIALOG_SIZES = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-2xl",
+  "3xl": "max-w-3xl",
+  "4xl": "max-w-4xl",
+  "5xl": "max-w-5xl",
+  "6xl": "max-w-6xl",
+  "7xl": "max-w-7xl",
+};
+
 const DialogParent = ({
   open,
   children,
@@ -14,10 +27,14 @@ const DialogParent = ({
   onOpenChange,
   icon,
   iconColor = "bg-gray-100",
+  size = "md",
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent
+        className={`${DIALOG_SIZES[size]}`}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="flex flex-col items-center gap-2">
             {icon && (

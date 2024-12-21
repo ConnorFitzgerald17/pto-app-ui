@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { PERMISSION_DESCRIPTIONS } from "../../constants/permissions";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-import DeleteConfirmDialog from "src/components/delete-confirm";
+import Confirm from "src/components/confirm";
 import { createSuccessToast, createErrorToast } from "src/utils/create-toast";
 import { toastMessages } from "src/constants/toast-messages";
 import { decodeAPIMessage } from "src/utils/decode-api-message";
@@ -63,12 +63,13 @@ const RoleCard = ({ role, handleFetch }) => {
 
   return (
     <>
-      <DeleteConfirmDialog
+      <Confirm
         isOpen={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
         onConfirm={() => handleDeleteRole()}
         title="Delete Role"
         message="Are you sure you want to delete this role? All users with this role will be reassigned to your organization's default role. This action cannot be undone."
+        buttonColor="bg-red-500 hover:bg-red-600"
       />
       {roleId && (
         <EditRole

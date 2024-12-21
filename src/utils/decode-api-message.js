@@ -3,6 +3,7 @@ export const errorMap = {
   "user.register.email.in.use": "An account with that email already exists",
   "user.reset.token.invalid":
     "Password reset token is either invalid or has expired",
+  "user.invite.email.in.use": "An account with that email already exists",
   "role.create.failed": "Failed to create role",
   "role.create.duplicate.name": "A role with that name already exists",
   "role.create.name.required": "Name is required",

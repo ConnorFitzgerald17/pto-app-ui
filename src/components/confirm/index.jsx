@@ -9,7 +9,16 @@ import {
   AlertDialogTitle,
 } from "src/components/ui/alert-dialog";
 
-const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
+const Confirm = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  buttonColor = "",
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+}) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose} className="z-50">
       <AlertDialogContent>
@@ -18,14 +27,15 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
           <AlertDialogDescription>{message}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={onClose}>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
               onConfirm();
               onClose();
             }}
+            className={buttonColor}
           >
-            Confirm
+            {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -33,4 +43,4 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
   );
 };
 
-export default ConfirmDialog;
+export default Confirm;

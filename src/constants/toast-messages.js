@@ -23,4 +23,7 @@ export const toastMessages = {
   UPDATE_ROLE_ERROR: "Failed to update role",
   ROLE_DELETE_SUCCESSFUL: "Role deleted successfully",
   ROLE_DELETE_ERROR: "Failed to delete role",
+
+  CREATE_POLICY_SUCCESSFUL: "Policy created successfully",
+  CREATE_POLICY_ERROR: "Failed to create policy",
 };
