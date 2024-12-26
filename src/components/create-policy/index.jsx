@@ -30,7 +30,11 @@ const validationSchema = Yup.object().shape({
     maxBalance: Yup.number()
       .required("Maximum balance is required")
       .min(0, "Maximum balance must be positive"),
-    startDate: Yup.date().required("Start date is required"),
+    startDate: Yup.date().when("frequency", {
+      is: "IMMEDIATE",
+      then: () => Yup.date().nullable(),
+      otherwise: () => Yup.date().required("Start date is required"),
+    }),
     prorated: Yup.boolean(),
   }),
   carryOver: Yup.object().shape({

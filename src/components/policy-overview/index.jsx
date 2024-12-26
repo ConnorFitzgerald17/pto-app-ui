@@ -40,8 +40,8 @@ const PolicyOverview = ({ policy }) => {
         <Disclosure defaultOpen>
           {({ open }) => (
             <div
-              className={`bg-white ${
-                !open && "hover:bg-gray-50"
+              className={`bg-white rounded-lg ${
+                !open && "hover:bg-gray-100"
               } transition-colors duration-150`}
             >
               <Disclosure.Button className="w-full flex justify-between items-center px-6 py-4">

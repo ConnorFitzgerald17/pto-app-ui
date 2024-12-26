@@ -16,14 +16,17 @@ export const FREQUENCY_OPTIONS = [
   { value: "QUARTERLY", label: "Quarterly" },
   { value: "YEARLY", label: "Yearly" },
   { value: "WEEKLY", label: "Weekly" },
+  { value: "BI_WEEKLY", label: "Bi-Weekly" },
+  { value: "SEMI_MONTHLY", label: "Semi-Monthly" },
+  { value: "IMMEDIATE", label: "Immediate" },
 ];
 
 export const POLICY_TYPES = [
   { value: "PTO", label: "Paid Time Off" },
   { value: "SICK", label: "Sick Leave" },
+  { value: "PARENTAL", label: "Parental Leave" },
   { value: "UNPAID", label: "Unpaid Leave" },
-  { value: "MATERNITY", label: "Maternity Leave" },
-  { value: "PATERNITY", label: "Paternity Leave" },
+  { value: "CUSTOM", label: "Custom" },
 ];
 
 export const POLICY_STATUS = [

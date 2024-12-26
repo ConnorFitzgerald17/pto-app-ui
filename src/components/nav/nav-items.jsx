@@ -4,7 +4,7 @@ export const navigation = [
   { name: "Dashboard", href: "/", current: false, permissions: [] },
   { name: "Calendar", href: "/calendar", current: false, permissions: [] },
   {
-    name: "User Management",
+    name: "Organization",
     href: "/organization",
     current: false,
     permissions: [PERMISSIONS.MANAGE_ORGANIZATION],

@@ -27,7 +27,7 @@ const DialogParent = ({
   onOpenChange,
   icon,
   iconColor = "bg-gray-100",
-  size = "md",
+  size = "lg",
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

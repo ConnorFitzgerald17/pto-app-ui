@@ -27,11 +27,13 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
   const roles = useSelector((state) => state.roles.dropdownRoles);
   const isLoading = useSelector((state) => state.user.isLoading);
   const [error, setError] = useState(false);
+  const policies = useSelector((state) => state.policy.policy);
 
   const formik = useFormik({
     initialValues: {
       email: "",
       role: "",
+      policyIds: [],
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -137,6 +139,42 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
                       {formik.errors.role}
                     </div>
                   )}
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Assign PTO Policies
+                  </label>
+                  <div className="mt-2 max-h-48 overflow-y-auto space-y-2">
+                    {policies.map((policy) => (
+                      <div key={policy.policyId} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`policy-${policy.policyId}`}
+                          name="policyIds"
+                          value={policy.policyId}
+                          checked={formik.values.policyIds.includes(
+                            policy.policyId,
+                          )}
+                          onChange={(e) => {
+                            const newPolicyIds = e.target.checked
+                              ? [...formik.values.policyIds, policy.policyId]
+                              : formik.values.policyIds.filter(
+                                  (id) => id !== policy.policyId,
+                                );
+                            formik.setFieldValue("policyIds", newPolicyIds);
+                          }}
+                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        />
+                        <label
+                          htmlFor={`policy-${policy.policyId}`}
+                          className="ml-2 block text-sm text-gray-900"
+                        >
+                          {policy.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">

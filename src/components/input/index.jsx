@@ -10,6 +10,7 @@ const InputField = ({
   onBlur,
   placeholder,
   error,
+  disabled,
 }) => {
   return (
     <div className="flex flex-col gap-2">
@@ -21,6 +22,7 @@ const InputField = ({
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
+        disabled={disabled}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>

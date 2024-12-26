@@ -12,6 +12,7 @@ export const errorMap = {
   "role.delete.default": "Cannot delete default role",
   "role.update.remove.default":
     "Cannot remove default status from current default role",
+  "role.delete.users.or.invites": "Cannot delete role with users or invites",
 };
 
 export const decodeAPIMessage = (message) => {

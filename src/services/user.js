@@ -45,11 +45,12 @@ const reset = ({ password, token }) => {
   return createRequest("POST", `user/reset`, { password, token });
 };
 
-const invite = ({ email, role, organizationId }) => {
+const invite = ({ email, role, organizationId, policyIds }) => {
   return createRequest("POST", `user/invite`, {
     email,
     role,
     organizationId,
+    policyIds,
   });
 };
 
