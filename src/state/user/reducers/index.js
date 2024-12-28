@@ -12,6 +12,9 @@ export const initialState = {
   details: null,
   token: null,
   role: null,
+  onboardingData: null,
+  onboardingStep: null,
+  onboardingRequired: false,
 };
 
 const actionMap = {

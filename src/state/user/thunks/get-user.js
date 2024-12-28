@@ -10,10 +10,16 @@ export const getUser = createThunk({
     const token = result.data.token;
     const details = result.data.user;
     const role = result.data.role;
+    const onboardingRequired = result.data.onboardingRequired;
+    const onboardingStep = result.data.onboardingStep;
+    const onboardingData = result.data.onboardingData;
     return {
       token,
       details,
       role,
+      onboardingRequired,
+      onboardingStep,
+      onboardingData,
     };
   },
   onStart: [() => userActions.setLoading(true)],

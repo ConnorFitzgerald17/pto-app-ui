@@ -8,6 +8,8 @@ import LoginRoute from "./routes/login";
 import NotFoundRoute from "./routes/not-found";
 import ProtectedRoute from "./routes/protected";
 import RegisterRoute from "./routes/register";
+import OnboardingRoute from "./routes/onboarding";
+
 import ResetRoute from "./routes/reset";
 import RootRoute from "./routes/root";
 import VerifyRoute from "./routes/verify";
@@ -30,6 +32,9 @@ const App = () => {
         <Route path="/forgot" element={<ForgotRoute />} />
         <Route path="/reset/:token" element={<ResetRoute />} />
         <Route path="/join/:token" element={<RegisterInviteRoute />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/onboarding" element={<OnboardingRoute />} />
+        </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<RootRoute />} />
         </Route>

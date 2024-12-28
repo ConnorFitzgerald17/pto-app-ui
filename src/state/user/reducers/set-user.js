@@ -6,5 +6,8 @@ export const setUser = ({ state, action }) => {
     token: action.payload.token,
     details: action.payload.details,
     role: action.payload.role,
+    onboardingRequired: action.payload.onboardingRequired,
+    onboardingStep: action.payload.onboardingStep,
+    onboardingData: action.payload.onboardingData,  
   };
 };

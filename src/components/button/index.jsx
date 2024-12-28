@@ -7,6 +7,8 @@ const classes = {
   tertiary:
     "flex justify-center rounded-md border border-gray-200 py-2 px-4 text-sm font-medium text-gray-600 shadow-sm hover:border-gray-300 hover:bg-gray-50 focus:outline-none",
   disabled: "cursor-default opacity-60",
+  ghost:
+    "flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-gray-600  hover:border-gray-300 hover:bg-gray-50 focus:outline-none",
 };
 
 const Button = ({
@@ -27,7 +29,7 @@ const Button = ({
         classes[variant],
         className,
         (disabled || isLoading) && classes.disabled,
-        fullWidth && "w-full"
+        fullWidth && "w-full",
       )}
       {...props}
     >

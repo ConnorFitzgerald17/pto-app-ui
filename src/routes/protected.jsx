@@ -30,6 +30,9 @@ const ProtectedRoute = ({
 }) => {
   useAuth({});
   const userDetails = useSelector((state) => state.user.details);
+  const onboardingRequired = useSelector(
+    (state) => state.user.onboardingRequired,
+  );
   const { permissions } = rest;
 
   const { loading, hasPermission } = usePermissionCheck(
@@ -39,6 +42,10 @@ const ProtectedRoute = ({
 
   if (loading) {
     return <LoadingSpinner />;
+  }
+
+  if (onboardingRequired && window.location.pathname !== "/onboarding") {
+    return <Navigate to="/onboarding" />;
   }
 
   if (!hasPermission) {

@@ -17,7 +17,6 @@ const register = ({
   email,
   password,
   organizationName,
-  domain,
 }) => {
   return createRequest("POST", "user/register", {
     firstName,
@@ -25,7 +24,6 @@ const register = ({
     email,
     password,
     organizationName,
-    domain,
   });
 };
 
