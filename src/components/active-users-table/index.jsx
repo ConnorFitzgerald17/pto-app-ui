@@ -7,7 +7,7 @@ import {
   TooltipContent,
 } from "src/components/ui/tooltip";
 import EditUser from "src/components/edit-user";
-
+import NoContentState from "src/components/no-users";
 const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
   const currentUser = useSelector((state) => state.user.details);
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +17,18 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
     setIsOpen(false);
     setUserId(null);
   };
+
+  if (!users?.length) {
+    return (
+      <div>
+        <h2 className="mb-4 text-lg font-medium text-gray-900">Active Users</h2>
+        <NoContentState
+          message="No active users found."
+          buttonText="Invite Users"
+        />
+      </div>
+    );
+  }
 
   return (
     <>

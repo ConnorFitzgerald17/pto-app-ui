@@ -4,6 +4,8 @@ import React from "react";
 const classes = {
   primary:
     "flex justify-center rounded-md border border-transparent bg-indigo-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+  secondary:
+    "flex justify-center rounded-md border border-transparent bg-white py-2 px-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2",
   tertiary:
     "flex justify-center rounded-md border border-gray-200 py-2 px-4 text-sm font-medium text-gray-600 shadow-sm hover:border-gray-300 hover:bg-gray-50 focus:outline-none",
   disabled: "cursor-default opacity-60",

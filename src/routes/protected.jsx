@@ -5,9 +5,8 @@ import VerifyBanner from "src/components/verify-banner";
 import React from "react";
 import { useSelector } from "react-redux";
 import { checkPermissions } from "src/utils/check-permissions";
-import LoadingSpinner from "src/components/loading-spinner";
 import { useAuth } from "src/hooks/use-auth";
-
+import LoadingSpinner from "src/components/loading-spinner";
 // New custom hook for permission checking
 const usePermissionCheck = (userDetails, permissions) => {
   if (!userDetails) return { loading: true, hasPermission: false };
@@ -41,7 +40,17 @@ const ProtectedRoute = ({
   );
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <>
+        <Sidebar />
+
+        <main className="py-10 lg:pl-72">
+          <div className="px-4 sm:px-6 lg:px-8">
+            <LoadingSpinner />
+          </div>
+        </main>
+      </>
+    );
   }
 
   if (onboardingRequired && window.location.pathname !== "/onboarding") {

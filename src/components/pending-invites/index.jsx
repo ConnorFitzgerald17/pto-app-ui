@@ -1,4 +1,5 @@
 import React from "react";
+import NoContentState from "../no-users";
 
 const PendingInvites = ({
   invites,
@@ -6,6 +7,20 @@ const PendingInvites = ({
   handleDeleteModalOpen,
   isResending,
 }) => {
+  if (!invites?.length) {
+    return (
+      <div>
+        <h2 className="mb-4 text-lg font-medium text-gray-900">
+          Pending Invites
+        </h2>
+        <NoContentState
+          // onClick={() => setIsInviteModalOpen(true)}
+          message="No pending invites found."
+          buttonText="Invite Users"
+        />
+      </div>
+    );
+  }
   return (
     <div>
       <h2 className="mb-4 text-lg font-medium text-gray-900">

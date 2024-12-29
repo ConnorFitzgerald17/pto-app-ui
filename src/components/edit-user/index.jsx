@@ -36,10 +36,8 @@ const EditUser = ({ isOpen, onClose, userId }) => {
   const user = useSelector((state) => state.org.orgUser);
   const userLoading = useSelector((state) => state.org.isLoading);
   const roles = useSelector((state) => state.roles.roles);
-  const rolesLoading = useSelector((state) => state.roles.isLoading);
   const currentUser = useSelector((state) => state.user.details);
   const policies = useSelector((state) => state.policy.policy);
-  // const policiesLoading = useSelector((state) => state.policy.isLoading);
 
   useEffect(() => {
     if (userId) {
@@ -102,7 +100,7 @@ const EditUser = ({ isOpen, onClose, userId }) => {
     formik.setFieldValue("roleId", value);
   };
 
-  if (!user || userLoading || rolesLoading) {
+  if (!user || userLoading) {
     return <LoadingSpinner />;
   }
 
