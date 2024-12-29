@@ -2,7 +2,7 @@ import { Menu } from "@headlessui/react";
 import { useSelector } from "react-redux";
 import { useAuth } from "src/hooks/use-auth";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { removeLocalStorage } from "src/utils/local-storage";
 import { localStorageKeys } from "src/constants/local-storage";
 import { createSuccessToast } from "src/utils/create-toast";
@@ -35,37 +35,37 @@ export default function UserMenu() {
         <span className="sr-only">Your profile</span>
         <span aria-hidden="true">{userDetails.firstName}</span>
       </Menu.Button>
-      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
+      <Menu.Items className="absolute z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black/5 focus:outline-none bottom-full ">
         <Menu.Item>
           {({ active }) => (
-            <a
-              href="#"
-              className={`block px-4 py-2 text-sm text-gray-700 ${
-                active ? "bg-gray-100" : ""
+            <Link
+              to="/settings"
+              className={`block px-4 py-2 text-sm text-white ${
+                active ? "bg-gray-800 hover:bg-gray-700" : ""
               }`}
             >
               Your Profile
-            </a>
+            </Link>
           )}
         </Menu.Item>
         <Menu.Item>
           {({ active }) => (
-            <a
-              href="#"
-              className={`block px-4 py-2 text-sm text-gray-700 ${
-                active ? "bg-gray-100" : ""
+            <Link
+              to="/settings"
+              className={`block px-4 py-2 text-sm text-white ${
+                active ? "bg-gray-800 hover:bg-gray-700" : ""
               }`}
             >
               Settings
-            </a>
+            </Link>
           )}
         </Menu.Item>
         <Menu.Item>
           {({ active }) => (
             <a
               onClick={handleLogout}
-              className={`block px-4 py-2 text-sm text-gray-700 cursor-pointer ${
-                active ? "bg-gray-100" : ""
+              className={`block px-4 py-2 text-sm text-white cursor-pointer w-full ${
+                active ? "bg-gray-800 hover:bg-gray-700" : ""
               }`}
             >
               Sign out

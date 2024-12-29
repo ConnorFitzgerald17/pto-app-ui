@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { createErrorToast } from "src/utils/create-toast";
 import onboardingService from "src/services/onboarding";
@@ -24,10 +24,14 @@ const apiStepName = {
 };
 
 const OnboardingWizard = () => {
+  const navigate = useNavigate();
+  const onboardingRequired = useSelector(
+    (state) => state.user.onboardingRequired,
+  );
+
   const userStep = useSelector((state) => state.user.onboardingStep);
   const [currentStep, setCurrentStep] = useState(userStep);
   const onboardingData = useSelector((state) => state.user.onboardingData);
-  const navigate = useNavigate();
 
   const handleStepComplete = async (step, data) => {
     try {
@@ -67,7 +71,7 @@ const OnboardingWizard = () => {
             initialData={onboardingData.teamStructure}
             onComplete={async (data) => {
               const success = await handleStepComplete("TEAM_STRUCTURE", data);
-              if (success) navigate("/dashboard");
+              if (success) navigate("/");
             }}
           />
         );
@@ -76,26 +80,31 @@ const OnboardingWizard = () => {
     }
   };
 
+  if (!onboardingRequired) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <div className="bg-gray-50">
-      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">
-            {steps[currentStep].title}
-          </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            {steps[currentStep].description}
-          </p>
-        </div>
+      {onboardingRequired && (
+        <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {steps[currentStep].title}
+            </h1>
+            <p className="mt-2 text-sm text-gray-600">
+              {steps[currentStep].description}
+            </p>
+          </div>
 
-        {/* Progress Steps */}
-        <nav className="mb-8">
-          <ol className="flex items-center justify-center gap-2">
-            {steps.map((step, stepIdx) => (
-              <li key={step.id} className="flex items-center">
-                <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border-2 font-medium
+          {/* Progress Steps */}
+          <nav className="mb-8">
+            <ol className="flex items-center justify-center gap-2">
+              {steps.map((step, stepIdx) => (
+                <li key={step.id} className="flex items-center">
+                  <div
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border-2 font-medium
                     ${
                       currentStep === step.id
                         ? "border-indigo-600 bg-indigo-600 text-white"
@@ -104,26 +113,27 @@ const OnboardingWizard = () => {
                         : "border-gray-300 bg-white text-gray-500"
                     }
                   `}
-                >
-                  {stepIdx + 1}
-                </div>
-                {stepIdx !== steps.length - 1 && (
-                  <div
-                    className={`mx-4 h-0.5 w-12 
+                  >
+                    {stepIdx + 1}
+                  </div>
+                  {stepIdx !== steps.length - 1 && (
+                    <div
+                      className={`mx-4 h-0.5 w-12 
                       ${currentStep > stepIdx ? "bg-indigo-600" : "bg-gray-200"}
                     `}
-                  />
-                )}
-              </li>
-            ))}
-          </ol>
-        </nav>
+                    />
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
 
-        {/* Content Area */}
-        <div className="overflow-hidden rounded-lg bg-white shadow">
-          <div className="p-6 sm:p-8">{renderStep()}</div>
+          {/* Content Area */}
+          <div className="overflow-hidden rounded-lg bg-white shadow">
+            <div className="p-6 sm:p-8">{renderStep()}</div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

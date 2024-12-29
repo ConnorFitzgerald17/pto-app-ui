@@ -1,8 +1,6 @@
 import { BellIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
-import { useAuth } from "src/hooks/use-auth";
 export default function UserActions() {
-  useAuth({ unauthRedirect: "/login" });
   const userDetails = useSelector((state) => state.user.details);
 
   return (
