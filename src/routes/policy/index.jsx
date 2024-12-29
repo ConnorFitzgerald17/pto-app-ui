@@ -34,7 +34,7 @@ const Policy = () => {
 
           <Button
             onClick={() => setIsCreatePolicyModalOpen(true)}
-            variant="secondary"
+            variant="primary"
           >
             <div className="flex items-center gap-2">
               <PlusIcon className="h-5 w-5" />

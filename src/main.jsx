@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import store from "./store";
 import App from "./app.jsx";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./index.css";
 
 if (process.env.NODE_ENV === "production") {

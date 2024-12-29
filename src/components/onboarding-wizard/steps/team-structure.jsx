@@ -339,10 +339,9 @@ const TeamStructure = ({ initialData = { departments: [] }, onComplete }) => {
       <div className="flex justify-between pt-4">
         {formik.values.isBasicStructure && (
           <Button
-            variant="secondary"
+            variant="tertiary"
             type="button"
             onClick={() => handletypeChange(false)}
-            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Switch to Departments
           </Button>

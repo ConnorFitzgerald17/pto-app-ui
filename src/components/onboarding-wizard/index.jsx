@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { createErrorToast } from "src/utils/create-toast";
 import onboardingService from "src/services/onboarding";
 import BasicInfo from "./steps/basic-info";
 import QuickSetup from "./steps/quick-setup";
 import TeamStructure from "./steps/team-structure";
-
+import userThunks from "src/state/user/thunks";
 const steps = [
   {
     id: 0,
@@ -25,6 +25,7 @@ const apiStepName = {
 
 const OnboardingWizard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const onboardingRequired = useSelector(
     (state) => state.user.onboardingRequired,
   );
@@ -32,6 +33,10 @@ const OnboardingWizard = () => {
   const userStep = useSelector((state) => state.user.onboardingStep);
   const [currentStep, setCurrentStep] = useState(userStep);
   const onboardingData = useSelector((state) => state.user.onboardingData);
+
+  useEffect(() => {
+    dispatch(userThunks.getUser());
+  }, [currentStep]);
 
   const handleStepComplete = async (step, data) => {
     try {
