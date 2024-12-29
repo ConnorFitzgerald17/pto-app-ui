@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Navigate, Outlet } from "react-router-dom";
-import Navbar from "src/components/nav";
+import Sidebar from "src/components/nav/sidebar";
 import VerifyBanner from "src/components/verify-banner";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -54,11 +54,14 @@ const ProtectedRoute = ({
 
   return (
     <>
-      <Navbar />
-      <VerifyBanner />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Outlet />
-      </div>
+      <Sidebar />
+
+      <main className="py-10 lg:pl-72">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <VerifyBanner />
+          <Outlet />
+        </div>
+      </main>
     </>
   );
 };

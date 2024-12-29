@@ -49,17 +49,13 @@ const validationSchema = Yup.object().shape({
   departments: Yup.array().when("isBasicStructure", {
     is: false,
     then: () =>
-      Yup.array()
-        .of(
-          Yup.object({
-            name: Yup.string().required("Department name is required"),
-            type: Yup.string()
-              .required("Department type is required")
-              .oneOf(["TECH", "BUSINESS", "CUSTOM"]),
-            subDepartments: Yup.array().of(Yup.string()),
-          }),
-        )
-        .min(1, "At least one department is required"),
+      Yup.array().of(
+        Yup.object({
+          name: Yup.string().required("Department name is required"),
+          type: Yup.string().required("Department type is required"),
+          subDepartments: Yup.array().of(Yup.string()),
+        }),
+      ),
     otherwise: () => Yup.array(),
   }),
   teamName: Yup.string().when("isBasicStructure", {
@@ -83,21 +79,23 @@ const TeamStructure = ({ initialData = { departments: [] }, onComplete }) => {
     onSubmit: (values) => {
       if (values.isBasicStructure) {
         onComplete({
-          departments: [
-            {
-              name: values.teamName,
-              type: "BASIC",
-              subDepartments: [],
-            },
-          ],
+          type: "BASIC",
+          teamName: values.teamName,
         });
       } else {
-        onComplete({ departments: values.departments });
+        onComplete({
+          type: "DEPARTMENT",
+          departments: values.departments.map((dept) => ({
+            name: dept.name,
+            type: dept.type,
+            subDepartments: dept.subDepartments,
+          })),
+        });
       }
     },
   });
 
-  const handleStructureTypeChange = (isBasic) => {
+  const handletypeChange = (isBasic) => {
     formik.setValues({
       isBasicStructure: isBasic,
       teamName: "",
@@ -107,11 +105,11 @@ const TeamStructure = ({ initialData = { departments: [] }, onComplete }) => {
 
   const handleAddDepartment = (template) => {
     if (template.id === "BASIC") {
-      handleStructureTypeChange(true);
+      handletypeChange(true);
       return;
     }
 
-    handleStructureTypeChange(false);
+    handletypeChange(false);
     const newDepartment = {
       name: template.name,
       type: template.id,
@@ -343,7 +341,7 @@ const TeamStructure = ({ initialData = { departments: [] }, onComplete }) => {
           <Button
             variant="secondary"
             type="button"
-            onClick={() => handleStructureTypeChange(false)}
+            onClick={() => handletypeChange(false)}
             className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Switch to Departments
