@@ -1,15 +1,7 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  BuildingOfficeIcon,
-  ClockIcon,
-  GlobeAltIcon,
-} from "@heroicons/react/24/outline";
-import orgThunks from "src/state/org/thunks";
+import { useState } from "react";
 import Button from "src/components/button";
 import Input from "src/components/input";
 import Select from "src/components/select";
-import LoadingSpinner from "src/components/loading-spinner";
 
 // Mock data - replace with actual API integration
 const timezones = [
@@ -27,8 +19,6 @@ const workWeekOptions = [
 ];
 
 export default function OrganizationSettings() {
-  const dispatch = useDispatch();
-  const orgLoading = useSelector((state) => state.org.isLoading);
   const [isEditing, setIsEditing] = useState(false);
 
   // Mock initial data - replace with Redux state
