@@ -6,17 +6,20 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "src/components/ui/tooltip";
+
+import { ROLE_LABELS } from "src/constants/roles";
+
 import EditUser from "src/components/edit-user";
 import NoContentState from "src/components/no-users";
 
 const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
   const currentUser = useSelector((state) => state.user.details);
   const [isOpen, setIsOpen] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
 
   const handleCloseEditUser = () => {
     setIsOpen(false);
-    setUserId(null);
+    setUser(null);
   };
 
   if (!users?.length) {
@@ -33,12 +36,8 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
 
   return (
     <>
-      {userId && (
-        <EditUser
-          isOpen={isOpen}
-          onClose={handleCloseEditUser}
-          userId={userId}
-        />
+      {user && (
+        <EditUser isOpen={isOpen} onClose={handleCloseEditUser} user={user} />
       )}
       <div>
         <h2 className="mb-4 text-lg font-medium text-gray-900">Active Users</h2>
@@ -55,8 +54,8 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
                 <th className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
                   Role
                 </th>
-                <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                  Status
+                <th className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
+                  Department
                 </th>
                 <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                   <span className="sr-only">Actions</span>
@@ -85,7 +84,11 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
                           </dd>
                           <dt className="sr-only">Role</dt>
                           <dd className="mt-1 truncate text-gray-500">
-                            {user.role.name}
+                            {ROLE_LABELS[user.role.name]}
+                          </dd>
+                          <dt className="sr-only">Department</dt>
+                          <dd className="mt-1 truncate text-gray-500">
+                            {user.department ? user.department : "N/A"}
                           </dd>
                         </dl>
                       </div>
@@ -95,25 +98,17 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser }) => {
                     {user.email}
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                    {user.role.name}
+                    {ROLE_LABELS[user.role.name]}
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                    <div
-                      className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                        user.isVerified
-                          ? "bg-green-100 text-green-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      {user.isVerified ? "Active" : "Pending"}
-                    </div>
+                    {user.department ? user.department : "N/A"}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                     <div className="flex justify-end gap-2">
                       <button
                         className="text-gray-600 hover:text-indigo-600"
                         onClick={() => {
-                          setUserId(user.userId);
+                          setUser(user);
                           setIsOpen(true);
                         }}
                       >

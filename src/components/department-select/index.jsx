@@ -4,6 +4,8 @@ import { ROLE_LEVELS } from "src/constants/roles";
 
 import departmentsThunks from "src/state/department/thunks";
 
+import SelectMenu from "src/components/select";
+
 const DepartmentSelect = ({ value, onChange, disabled = false }) => {
   const dispatch = useDispatch();
 
@@ -71,13 +73,14 @@ const DepartmentSelect = ({ value, onChange, disabled = false }) => {
   const renderDepartmentOptions = (departments) => {
     const flatDepartments = flattenDepartments(departments);
 
-    return flatDepartments.map((dept) => (
-      <option key={dept.departmentId} value={dept.departmentId}>
-        {"  ".repeat(dept.level)}
-        {dept.name}
-        {dept.directCount ? ` (${dept.directCount})` : ""}
-      </option>
-    ));
+    const options = flatDepartments.map((dept) => ({
+      value: dept.departmentId,
+      label: `${"  ".repeat(dept.level)}${dept.name}${
+        dept.directCount ? ` (${dept.directCount})` : ""
+      }`,
+    }));
+
+    return options;
   };
 
   const accessibleDepartments = filterDepartmentsByAccess(
@@ -94,17 +97,12 @@ const DepartmentSelect = ({ value, onChange, disabled = false }) => {
       >
         Department
       </label>
-      <select
-        id="department"
-        name="department"
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono"
+      <SelectMenu
+        options={renderDepartmentOptions(accessibleDepartments)}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(value) => onChange(value)}
         disabled={disabled}
-      >
-        <option value="">Select a department</option>
-        {renderDepartmentOptions(accessibleDepartments)}
-      </select>
+      />
     </div>
   );
 };

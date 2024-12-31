@@ -13,7 +13,9 @@ import { toastMessages } from "src/constants/toast-messages";
 import { decodeAPIMessage } from "src/utils/decode-api-message";
 import ErrorBanner from "src/components/error-banner";
 import InputField from "src/components/input";
-import SelectField from "src/components/select";
+
+import UserRoleSelect from "src/components/user-role-select";
+import DepartmentSelect from "src/components/department-select";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -24,16 +26,15 @@ const validationSchema = Yup.object().shape({
 
 const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
   const dispatch = useDispatch();
-  const roles = useSelector((state) => state.roles.dropdownRoles);
   const isLoading = useSelector((state) => state.user.isLoading);
   const [error, setError] = useState(false);
-  const policies = useSelector((state) => state.policy.policy);
 
   const formik = useFormik({
     initialValues: {
       email: "",
       role: "",
-      policyIds: [],
+      department: "",
+      team: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -119,63 +120,16 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
                   )}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="role"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Access Level
-                  </label>
-                  <SelectField
-                    id="role"
-                    name="role"
-                    options={roles}
-                    placeholder="Select access level"
-                    value={formik.values.role}
-                    onChange={(value) => formik.setFieldValue("role", value)}
-                  />
-                  {formik.touched.role && formik.errors.role && (
-                    <div className="mt-1 text-sm text-red-600">
-                      {formik.errors.role}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Assign PTO Policies
-                  </label>
-                  <div className="mt-2 max-h-48 overflow-y-auto space-y-2">
-                    {policies.map((policy) => (
-                      <div key={policy.policyId} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id={`policy-${policy.policyId}`}
-                          name="policyIds"
-                          value={policy.policyId}
-                          checked={formik.values.policyIds.includes(
-                            policy.policyId,
-                          )}
-                          onChange={(e) => {
-                            const newPolicyIds = e.target.checked
-                              ? [...formik.values.policyIds, policy.policyId]
-                              : formik.values.policyIds.filter(
-                                  (id) => id !== policy.policyId,
-                                );
-                            formik.setFieldValue("policyIds", newPolicyIds);
-                          }}
-                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <label
-                          htmlFor={`policy-${policy.policyId}`}
-                          className="ml-2 block text-sm text-gray-900"
-                        >
-                          {policy.name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <UserRoleSelect
+                  value={formik.values.role}
+                  onChange={(value) => formik.setFieldValue("role", value)}
+                />
+                <DepartmentSelect
+                  value={formik.values.department}
+                  onChange={(value) =>
+                    formik.setFieldValue("department", value)
+                  }
+                />
 
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button

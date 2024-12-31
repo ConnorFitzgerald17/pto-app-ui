@@ -19,7 +19,7 @@ const actionMap = {
   [types.SET_LOADING]: setLoading,
   [types.SET_ORG]: setOrg,
   [types.SET_ORG_USERS]: setOrgUsers,
-  [types.SET_ORG_USER]: setOrgUser, 
+  [types.SET_ORG_USER]: setOrgUser,
 };
 
 export default reducerFactory(actionMap, initialState);

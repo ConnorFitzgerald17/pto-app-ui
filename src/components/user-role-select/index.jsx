@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import { ROLE_LABELS, ROLE_LEVELS } from "src/constants/roles";
 
+import SelectMenu from "src/components/select";
+
 const UserRoleSelect = ({ value, onChange, disabled = false }) => {
   const currentUserRoleLevel = useSelector(
     (state) => state.user.details.role.level,
@@ -31,26 +33,22 @@ const UserRoleSelect = ({ value, onChange, disabled = false }) => {
     }
   });
 
+  const options = availableRoles.map(([roleKey, label]) => ({
+    value: roleKey,
+    label,
+  }));
+
   return (
     <div>
       <label htmlFor="role" className="block text-sm font-medium text-gray-700">
         Role
       </label>
-      <select
-        id="role"
-        name="role"
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+      <SelectMenu
+        options={options}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(value) => onChange(value)}
         disabled={disabled}
-      >
-        <option value="">Select a role</option>
-        {availableRoles.map(([roleKey, label]) => (
-          <option key={roleKey} value={roleKey}>
-            {label}
-          </option>
-        ))}
-      </select>
+      />
     </div>
   );
 };

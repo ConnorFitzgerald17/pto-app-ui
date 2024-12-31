@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup"; // Recommended for validation
@@ -26,25 +26,26 @@ const validationSchema = Yup.object().shape({
   departmentId: Yup.string().required("Department is required"),
 });
 
-const EditUser = ({ isOpen, onClose, userId }) => {
-  const [error, setError] = useState(false);
+const EditUser = ({ isOpen, onClose, user }) => {
   const dispatch = useDispatch();
+  const [error, setError] = useState(false);
 
-  const user = useSelector((state) => state.org.orgUser);
   const userLoading = useSelector((state) => state.org.isLoading);
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(orgThunks.getOrgUser({ data: { userId } }));
-    }
-  }, [dispatch, userId]);
+  console.log("userLoading", userLoading);
+
+  const handleClose = () => {
+    formik.resetForm();
+    onClose();
+  };
 
   const formik = useFormik({
     initialValues: {
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",
       email: user?.email || "",
-      roleId: user?.role?.roleId || "",
+      roleName: user?.role?.name || "",
+      departmentId: user?.departmentId || "",
       isVerified: user?.isVerified || false,
       policyIds: user?.policyIds || [],
     },
@@ -56,7 +57,7 @@ const EditUser = ({ isOpen, onClose, userId }) => {
       try {
         dispatch(
           orgThunks.updateOrgUser(
-            { data: values, userId },
+            { data: values, userId: user.userId },
             (err) => {
               if (!err) {
                 createSuccessToast(toastMessages.UPDATE_USER_SUCCESSFUL);
@@ -85,7 +86,7 @@ const EditUser = ({ isOpen, onClose, userId }) => {
     formik.setFieldValue("departmentId", value);
   };
 
-  if (!user || userLoading) {
+  if (!user) {
     return <LoadingSpinner />;
   }
 
@@ -166,12 +167,12 @@ const EditUser = ({ isOpen, onClose, userId }) => {
           </div>
           <div>
             <UserRoleSelect
-              value={formik.values.roleId}
+              value={formik.values.roleName}
               onChange={handleRoleChange}
             />
-            {formik.touched.roleId && formik.errors.roleId && (
+            {formik.touched.roleName && formik.errors.roleName && (
               <div className="mt-1 text-sm text-red-600">
-                {formik.errors.roleId}
+                {formik.errors.roleName}
               </div>
             )}
           </div>
@@ -221,7 +222,7 @@ const EditUser = ({ isOpen, onClose, userId }) => {
           <div className="flex justify-end space-x-3 pt-4 mt-6 border-t border-gray-200">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Cancel
