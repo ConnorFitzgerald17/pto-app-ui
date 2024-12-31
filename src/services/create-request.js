@@ -43,5 +43,12 @@ export const createRequest = (method, endpoint, data) => {
         withCredentials: true,
       });
     }
+    case "DELETE_BULK": {
+      return axios.delete(`${apiBase}/${endpoint}`, {
+        headers: defaultHeaders,
+        withCredentials: true,
+        data,
+      });
+    }
   }
 };

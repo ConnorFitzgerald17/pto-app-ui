@@ -52,6 +52,12 @@ const invite = ({ email, role, organizationId, policyIds }) => {
   });
 };
 
+const inviteUsers = ({ users }) => {
+  return createRequest("POST", `user/invite/bulk`, {
+    users,
+  });
+};
+
 const resendInvite = ({ inviteId }) => {
   return createRequest("POST", `user/invite/resend`, {
     inviteId,
@@ -66,12 +72,23 @@ const deleteUser = ({ userId }) => {
   return createRequest("DELETE", `user/delete`, userId);
 };
 
+const deleteUsers = (userIds) => {
+  return createRequest("DELETE_BULK", `user/delete/bulk`, { userIds });
+};
+
 const registerFromInvite = ({ token, password, firstName, lastName }) => {
   return createRequest("POST", `user/register-invite`, {
     token,
     password,
     firstName,
     lastName,
+  });
+};
+
+const changeRoles = (userIds, role) => {
+  return createRequest("PUT", `user/change-roles`, {
+    userIds,
+    role,
   });
 };
 
@@ -84,10 +101,13 @@ const userService = {
   requestReset,
   reset,
   invite,
+  inviteUsers,
   registerFromInvite,
   resendInvite,
   deleteInvite,
   deleteUser,
+  deleteUsers,
+  changeRoles,
 };
 
 export default userService;

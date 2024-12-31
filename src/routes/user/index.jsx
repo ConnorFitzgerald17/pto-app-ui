@@ -211,8 +211,6 @@ const User = () => {
         </Button>
       </div>
 
-
-
       {/* Stats Cards */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatsCard
@@ -242,8 +240,8 @@ const User = () => {
         />
       </div>
 
-            {/* Filters */}
-            <div className="mb-6 grid gap-4 md:grid-cols-4">
+      {/* Filters */}
+      <div className="mb-6 grid gap-4 md:grid-cols-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Search
@@ -286,6 +284,7 @@ const User = () => {
             setIsDeleteUserConfirmOpen(true);
             setUserIdToDelete(userId);
           }}
+          fetchUsers={handleFetchUsers}
         />
 
         {orgUsers.invites?.length > 0 && (

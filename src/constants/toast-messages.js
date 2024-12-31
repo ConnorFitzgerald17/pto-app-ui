@@ -10,6 +10,9 @@ export const toastMessages = {
   UPDATE_USER_SUCCESSFUL: "User updated successfully",
   UPDATE_USER_ERROR: "Failed to update user",
 
+  BULK_DELETE_SUCCESSFUL: "Users deleted successfully",
+  BULK_DELETE_ERROR: "Failed to delete users",
+
   INVITE_SUCCESSFUL: "Invitation sent successfully",
   INVITE_RESENT_SUCCESSFUL: "Invitation resent successfully",
   INVITE_DELETED_SUCCESSFUL: "Invitation deleted successfully",
@@ -17,12 +20,18 @@ export const toastMessages = {
   INVITE_RESEND_ERROR: "Failed to resend invitation",
   INVITE_DELETE_ERROR: "Failed to delete invitation",
 
+  BULK_INVITE_SUCCESSFUL: "Invitations sent successfully",
+  BULK_INVITE_ERROR: "Failed to send invitations",
+
   CREATE_ROLE_SUCCESSFUL: "Role created successfully",
   CREATE_ROLE_ERROR: "Failed to create role",
   UPDATE_ROLE_SUCCESSFUL: "Role updated successfully",
   UPDATE_ROLE_ERROR: "Failed to update role",
   ROLE_DELETE_SUCCESSFUL: "Role deleted successfully",
   ROLE_DELETE_ERROR: "Failed to delete role",
+
+  BULK_CHANGE_ROLE_SUCCESSFUL: "Roles changed successfully",
+  BULK_CHANGE_ROLE_ERROR: "Failed to change roles",
 
   CREATE_POLICY_SUCCESSFUL: "Policy created successfully",
   CREATE_POLICY_ERROR: "Failed to create policy",
