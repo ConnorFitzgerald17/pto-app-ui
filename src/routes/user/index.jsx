@@ -24,7 +24,6 @@ const User = () => {
   const dispatch = useDispatch();
   const orgUsers = useSelector((state) => state.org.orgUsers);
   const orgLoading = useSelector((state) => state.org.isLoading);
-
   // State
   const [isResending, setIsResending] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
@@ -136,15 +135,6 @@ const User = () => {
         message="Are you sure you want to delete this user? This action cannot be undone."
         buttonColor="bg-red-500 hover:bg-red-600"
       />
-
-      {/* <EditUser
-        isOpen={isEditUserOpen}
-        onClose={() => {
-          setIsEditUserOpen(false);
-          setSelectedUserId(null);
-        }}
-        userId={selectedUserId}
-      /> */}
 
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">

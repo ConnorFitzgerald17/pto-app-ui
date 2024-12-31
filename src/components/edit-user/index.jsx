@@ -5,19 +5,17 @@ import * as Yup from "yup"; // Recommended for validation
 import DialogParent from "src/components/dialog";
 
 import orgThunks from "src/state/org/thunks";
-import rolesThunks from "src/state/role/thunks";
 import LoadingSpinner from "src/components/loading-spinner";
 import ErrorBanner from "src/components/error-banner";
-import SelectMenu from "src/components/select";
 import InputField from "src/components/input";
 
 import { decodeAPIMessage } from "src/utils/decode-api-message";
 import { get } from "lodash";
 import { createSuccessToast, createErrorToast } from "src/utils/create-toast";
 import { toastMessages } from "src/constants/toast-messages";
-import { PERMISSIONS } from "src/constants/permissions";
 import userThunks from "src/state/user/thunks";
-
+import UserRoleSelect from "src/components/user-role-select";
+import DepartmentSelect from "src/components/department-select";
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
@@ -25,38 +23,21 @@ const validationSchema = Yup.object().shape({
     .email("Invalid email address")
     .required("Email is required"),
   roleId: Yup.string().required("Role is required"),
-  isVerified: Yup.boolean(),
+  departmentId: Yup.string().required("Department is required"),
 });
 
 const EditUser = ({ isOpen, onClose, userId }) => {
-  const [filteredRoles, setFilteredRoles] = useState([]);
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.org.orgUser);
   const userLoading = useSelector((state) => state.org.isLoading);
-  const roles = useSelector((state) => state.roles.roles);
-  const currentUser = useSelector((state) => state.user.details);
-  const policies = useSelector((state) => state.policy.policy);
 
   useEffect(() => {
     if (userId) {
       dispatch(orgThunks.getOrgUser({ data: { userId } }));
-      dispatch(rolesThunks.getRoles());
     }
   }, [dispatch, userId]);
-
-  useEffect(() => {
-    if (currentUser.userId === userId) {
-      setFilteredRoles(
-        roles.filter((role) =>
-          role.permissions.includes(PERMISSIONS.MANAGE_ORGANIZATION),
-        ),
-      );
-    } else {
-      setFilteredRoles(roles);
-    }
-  }, [currentUser, roles]);
 
   const formik = useFormik({
     initialValues: {
@@ -98,6 +79,10 @@ const EditUser = ({ isOpen, onClose, userId }) => {
 
   const handleRoleChange = (value) => {
     formik.setFieldValue("roleId", value);
+  };
+
+  const handleDepartmentChange = (value) => {
+    formik.setFieldValue("departmentId", value);
   };
 
   if (!user || userLoading) {
@@ -158,7 +143,6 @@ const EditUser = ({ isOpen, onClose, userId }) => {
               )}
             </div>
           </div>
-
           <div>
             <label
               htmlFor="email"
@@ -180,19 +164,8 @@ const EditUser = ({ isOpen, onClose, userId }) => {
               </div>
             )}
           </div>
-
           <div>
-            <label
-              htmlFor="roleId"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Role
-            </label>
-            <SelectMenu
-              options={filteredRoles.map((role) => ({
-                value: role.roleId,
-                label: role.name,
-              }))}
+            <UserRoleSelect
               value={formik.values.roleId}
               onChange={handleRoleChange}
             />
@@ -202,41 +175,49 @@ const EditUser = ({ isOpen, onClose, userId }) => {
               </div>
             )}
           </div>
-
-          <div className="mt-4">
+          {/* We can implement later if we need to */}
+          {/* <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
               PTO Policies
             </label>
             <div className="mt-2 space-y-2">
-              {policies.map((policy) => (
-                <div key={policy.policyId} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`policy-${policy.policyId}`}
-                    name="policyIds"
-                    value={policy.policyId}
-                    checked={formik.values.policyIds.includes(policy.policyId)}
-                    onChange={(e) => {
-                      const newPolicyIds = e.target.checked
-                        ? [...formik.values.policyIds, policy.policyId]
-                        : formik.values.policyIds.filter(
-                            (id) => id !== policy.policyId,
-                          );
-                      formik.setFieldValue("policyIds", newPolicyIds);
-                    }}
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <label
-                    htmlFor={`policy-${policy.policyId}`}
-                    className="ml-2 block text-sm text-gray-900"
-                  >
-                    {policy.name}
-                  </label>
-                </div>
-              ))}
+              {policies &&
+                policies.map((policy) => (
+                  <div key={policy.policyId} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`policy-${policy.policyId}`}
+                      name="policyIds"
+                      value={policy.policyId}
+                      checked={formik.values.policyIds.includes(
+                        policy.policyId,
+                      )}
+                      onChange={(e) => {
+                        const newPolicyIds = e.target.checked
+                          ? [...formik.values.policyIds, policy.policyId]
+                          : formik.values.policyIds.filter(
+                              (id) => id !== policy.policyId,
+                            );
+                        formik.setFieldValue("policyIds", newPolicyIds);
+                      }}
+                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <label
+                      htmlFor={`policy-${policy.policyId}`}
+                      className="ml-2 block text-sm text-gray-900"
+                    >
+                      {policy.name}
+                    </label>
+                  </div>
+                ))}
             </div>
+          </div> */}
+          <div>
+            <DepartmentSelect
+              value={formik.values.departmentId}
+              onChange={handleDepartmentChange}
+            />
           </div>
-
           <div className="flex justify-end space-x-3 pt-4 mt-6 border-t border-gray-200">
             <button
               type="button"

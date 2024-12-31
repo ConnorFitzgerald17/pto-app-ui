@@ -19,7 +19,7 @@ export const createErrorToast = (message) => {
 export const createSuccessToast = (message) => {
   toast(message, {
     className:
-      "shadow-lg bg-white dark:bg-gray-900 p-4 rounded-xl border border-green-200 dark:border-green-800 text-gray-900 dark:text-gray-100 font-medium flex items-center gap-3",
+      "shadow-lg bg-green-50 dark:bg-gray-900 p-4 rounded-xl border border-green-200 dark:border-green-800 text-gray-900 dark:text-gray-100 font-medium flex items-center gap-3",
     bodyClassName: "flex-1 text-sm",
     icon: CheckCircleIcon,
     position: "bottom-right",
