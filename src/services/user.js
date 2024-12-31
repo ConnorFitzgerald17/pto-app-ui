@@ -92,6 +92,13 @@ const changeRoles = (userIds, role) => {
   });
 };
 
+const changeDepartments = (userIds, department) => {
+  return createRequest("PUT", `user/change-departments`, {
+    userIds,
+    department,
+  });
+};
+
 const userService = {
   getUser,
   login,
@@ -108,6 +115,7 @@ const userService = {
   deleteUser,
   deleteUsers,
   changeRoles,
+  changeDepartments,
 };
 
 export default userService;

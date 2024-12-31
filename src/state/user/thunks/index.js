@@ -9,6 +9,7 @@ import { deleteUser } from "./delete-user";
 import { inviteUsers } from "./invite-users";
 import { deleteUsers } from "./delete-users";
 import { changeRoles } from "./change-roles";
+import { changeDepartments } from "./change-departments";
 const userThunks = {
   getUser,
   login,
@@ -21,6 +22,7 @@ const userThunks = {
   inviteUsers,
   deleteUsers,
   changeRoles,
+  changeDepartments,
 };
 
 export default userThunks;

@@ -13,6 +13,15 @@ export const errorMap = {
   "role.update.remove.default":
     "Cannot remove default status from current default role",
   "role.delete.users.or.invites": "Cannot delete role with users or invites",
+
+  "user.change.departments.department.same.as.current":
+    "Department is the same as the current department",
+  "user.change.roles.role.same.as.current":
+    "Role is the same as the current role",
+  "user.change.departments.no.users.provided": "No users provided",
+  "user.change.roles.no.users.provided": "No users provided",
+  "user.change.departments.department.not.found": "Department not found",
+  "user.change.roles.role.not.found": "Role not found",
 };
 
 export const decodeAPIMessage = (message) => {

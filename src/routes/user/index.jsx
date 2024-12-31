@@ -8,6 +8,7 @@ import { get } from "lodash";
 
 import orgThunks from "src/state/org/thunks";
 import userThunks from "src/state/user/thunks";
+import departmentThunks from "src/state/department/thunks";
 
 import LoadingSpinner from "src/components/loading-spinner";
 import Confirm from "src/components/confirm";
@@ -48,6 +49,10 @@ const User = () => {
   // Handlers
   const handleFetchUsers = () => {
     dispatch(orgThunks.getOrgUsers({}));
+  };
+
+  const handleFetchDepartments = () => {
+    dispatch(departmentThunks.getDepartment({}));
   };
 
   const handleDeleteInvite = async (inviteId) => {
@@ -285,6 +290,7 @@ const User = () => {
             setUserIdToDelete(userId);
           }}
           fetchUsers={handleFetchUsers}
+          fetchDepartments={handleFetchDepartments}
         />
 
         {orgUsers.invites?.length > 0 && (

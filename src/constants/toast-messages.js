@@ -35,4 +35,7 @@ export const toastMessages = {
 
   CREATE_POLICY_SUCCESSFUL: "Policy created successfully",
   CREATE_POLICY_ERROR: "Failed to create policy",
+
+  BULK_CHANGE_DEPARTMENT_SUCCESSFUL: "Departments changed successfully",
+  BULK_CHANGE_DEPARTMENT_ERROR: "Failed to change departments",
 };
