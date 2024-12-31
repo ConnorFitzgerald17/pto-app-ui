@@ -6,13 +6,6 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "src/components/ui/tooltip";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "src/components/ui/select";
 
 import { ROLE_LABELS } from "src/constants/roles";
 import userThunks from "src/state/user/thunks";
@@ -24,9 +17,31 @@ import { toastMessages } from "src/constants/toast-messages";
 import EditUser from "src/components/edit-user";
 import NoContentState from "src/components/no-users";
 import Confirm from "src/components/confirm";
+import SelectMenu from "../select";
 import RoleChanger from "src/components/active-users-table/bulk-components/role-changer";
+import DepartmentChanger from "src/components/active-users-table/bulk-components/department-changer";
 
-const ActiveUsersTable = ({ users, handleOpenDeleteUser, fetchUsers }) => {
+const bulkActions = [
+  {
+    label: "Change Role",
+    value: "role",
+  },
+  {
+    label: "Change Department",
+    value: "department",
+  },
+  {
+    label: "Remove Users",
+    value: "delete",
+  },
+];
+
+const ActiveUsersTable = ({
+  users,
+  handleOpenDeleteUser,
+  fetchUsers,
+  fetchDepartments,
+}) => {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.user.details);
@@ -39,6 +54,7 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser, fetchUsers }) => {
   // Bulk actions
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [roleChangerOpen, setRoleChangerOpen] = useState(false);
+  const [departmentChangerOpen, setDepartmentChangerOpen] = useState(false);
 
   // Calculate pagination values
   const indexOfLastUser = currentPage * usersPerPage;
@@ -87,9 +103,7 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser, fetchUsers }) => {
         setRoleChangerOpen(true);
         break;
       case "department":
-        console.log("department");
-        console.log(selectedUsers);
-        setSelectedUsers([]);
+        setDepartmentChangerOpen(true);
         break;
       default:
         break;
@@ -134,6 +148,27 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser, fetchUsers }) => {
       ),
     );
     setRoleChangerOpen(false);
+  };
+
+  const handleBulkChangeDepartment = (department) => {
+    dispatch(
+      userThunks.changeDepartments(
+        { data: { userIds: selectedUsers, department: department } },
+        (err) => {
+          if (!err) {
+            createSuccessToast(toastMessages.BULK_CHANGE_DEPARTMENT_SUCCESSFUL);
+            fetchUsers();
+            fetchDepartments();
+            setDepartmentChangerOpen(false);
+            return;
+          }
+          createErrorToast(
+            decodeAPIMessage(get(err, "response.data.error", "")),
+          );
+        },
+      ),
+    );
+    setDepartmentChangerOpen(false);
   };
 
   // Update the checkbox checked state
@@ -189,29 +224,31 @@ const ActiveUsersTable = ({ users, handleOpenDeleteUser, fetchUsers }) => {
           }}
         />
       )}
+      {departmentChangerOpen && (
+        <DepartmentChanger
+          open={departmentChangerOpen}
+          users={selectedUsers}
+          onChange={handleBulkChangeDepartment}
+          onClose={() => {
+            setDepartmentChangerOpen(false);
+            setSelectedUsers([]);
+          }}
+        />
+      )}
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-medium text-gray-900">Active Users</h2>
           {selectedUsers.length > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">
+            <div className="flex  items-center gap-2">
+              <span className="text-sm text-gray-500 w-[150px]">
                 {selectedUsers.length} selected
               </span>
-              <Select onValueChange={handleBulkAction}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Bulk Actions" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="role">Change Role</SelectItem>
-                  <SelectItem value="department">Change Department</SelectItem>
-                  <SelectItem
-                    onClick={() => setConfirmOpen(true)}
-                    value="delete"
-                  >
-                    Remove Users
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <SelectMenu
+                options={bulkActions}
+                onChange={handleBulkAction}
+                placeholder="Bulk Actions"
+                className="w-[180px]"
+              />
             </div>
           )}
         </div>
