@@ -259,7 +259,7 @@ const ActiveUsersTable = ({
                 <th className="w-12 px-3 py-3.5">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     checked={allSelectableSelected}
                     onChange={handleSelectAll}
                   />
@@ -287,7 +287,7 @@ const ActiveUsersTable = ({
                   <td className="w-12 px-3 py-4">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       checked={selectedUsers.includes(user.userId)}
                       onChange={() => handleSelectUser(user.userId)}
                       disabled={user.userId === currentUser.userId}

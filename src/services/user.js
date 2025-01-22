@@ -35,6 +35,10 @@ const verify = (token) => {
   return createRequest("GET", `user/verify/${token}`);
 };
 
+const verifyInvite = (token) => {
+  return createRequest("GET", `user/verify-invite/${token}`);
+};
+
 const requestReset = ({ email }) => {
   return createRequest("POST", `user/reset-request`, { email });
 };
@@ -116,6 +120,7 @@ const userService = {
   deleteUsers,
   changeRoles,
   changeDepartments,
+  verifyInvite,
 };
 
 export default userService;

@@ -16,16 +16,13 @@ const VerifyRoute = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const result = await userService.verify(token);
-        if (get(result, "response.data.isVerified", false)) {
-          setStatus(statuses.SUCCESS);
-        } else {
-          setStatus(statuses.FAILED);
-        }
+        await userService.verify(token);
+        // If we get here without throwing, it's successful
+        setStatus(statuses.SUCCESS);
       } catch (err) {
         const message = get(err, "response.data.error", "");
 
-        // Still successful, already verified
+        // Still successful if user is already verified
         if (message === "user.verify.user.verified") {
           setStatus(statuses.SUCCESS);
         } else {

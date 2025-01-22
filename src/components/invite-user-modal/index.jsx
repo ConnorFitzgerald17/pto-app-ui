@@ -57,6 +57,7 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
     },
     validationSchema,
     onSubmit: async (values) => {
+      console.log("values", values);
       try {
         dispatch(
           userThunks.invite(
@@ -213,7 +214,11 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
                 <Tab.Panel>
                   {/* Single User Form */}
                   {error && <ErrorBanner message={error} />}
-                  <form onSubmit={formik.handleSubmit} className="space-y-4">
+                  <form
+                    id="single-user-form"
+                    onSubmit={formik.handleSubmit}
+                    className="space-y-4"
+                  >
                     <div>
                       <label
                         htmlFor="email"
@@ -358,8 +363,8 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               {activeTab === 0 ? (
                 <button
-                  type="submit"
                   form="single-user-form"
+                  type="submit"
                   disabled={isLoading}
                   className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                 >

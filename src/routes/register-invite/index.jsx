@@ -2,13 +2,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import get from "lodash/get";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { useAuth } from "src/hooks/use-auth";
 import { decodeAPIMessage } from "src/utils/decode-api-message";
 import { setLocalStorage } from "src/utils/local-storage";
 import { localStorageKeys } from "src/constants/local-storage";
 import userThunks from "src/state/user/thunks";
+import userService from "src/services/user";
 
 import Button from "src/components/button";
 import Input from "src/components/input";
@@ -21,6 +22,15 @@ const RegisterInviteRoute = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useParams();
+  const [organization, setOrganization] = useState(null);
+
+  useEffect(() => {
+    userService.verifyInvite(token).then((res) => {
+      console.log("res", res);
+      setOrganization(res.data.name);
+    });
+  }, [token]);
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -62,7 +72,10 @@ const RegisterInviteRoute = () => {
             Register for Your Account
           </h1>
           <p className="mt-2 text-center text-sm text-gray-600">
-            You’ve been invited to join.{" "}
+            You’ve been invited to join{" "}
+            <span className="font-bold">{organization}</span> on PTO APP.{" "}
+          </p>
+          <p className="text-sm text-gray-600 mt-2 text-center">
             <Link
               className="font-medium text-indigo-600 hover:text-indigo-500"
               to="/login"
