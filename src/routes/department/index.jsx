@@ -14,8 +14,13 @@ import departmentThunks from "src/state/department/thunks";
 import LoadingSpinner from "src/components/loading-spinner";
 import ViewDepartment from "src/components/view-department";
 import EditDepartment from "src/components/edit-department";
-
-const DepartmentRow = ({ department, level = 0, setViewDepartment, setEditDepartment }) => {
+import CreateDepartment from "src/components/create-department";
+const DepartmentRow = ({
+  department,
+  level = 0,
+  setViewDepartment,
+  setEditDepartment,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasChildren = department.children?.length > 0;
 
@@ -142,33 +147,44 @@ const Department = () => {
   const departmentsLoading = useSelector((state) => state.department.isLoading);
   const [viewDepartment, setViewDepartment] = useState(null);
   const [editDepartment, setEditDepartment] = useState(null);
+  const [createDepartment, setCreateDepartment] = useState(false);
 
   useEffect(() => {
     dispatch(departmentThunks.getDepartment());
-  }, [dispatch]);
+  }, []);
 
   if (departmentsLoading) {
     return <LoadingSpinner />;
   }
 
-  console.log(departments);
-
   const managers = [];
   const policies = [];
 
-  // In your render method:
+  const handleCreateDepartment = () => {
+    setCreateDepartment(true);
+  };
+
+  console.log(createDepartment);
 
   return (
     <>
-      <ViewDepartment
-        isOpen={!!viewDepartment}
-        onClose={() => setViewDepartment(null)}
-        department={viewDepartment}
-      />
+      {createDepartment && (
+        <CreateDepartment
+          isOpen={!!createDepartment}
+          onClose={() => setCreateDepartment(false)}
+        />
+      )}
+      {viewDepartment && (
+        <ViewDepartment
+          isOpen={!!viewDepartment}
+          onClose={() => setViewDepartment(false)}
+          department={viewDepartment}
+        />
+      )}
 
       <EditDepartment
         isOpen={!!editDepartment}
-        onClose={() => setEditDepartment(null)}
+        onClose={() => setEditDepartment(false)}
         department={editDepartment}
         managers={managers || []}
         policies={policies || []}
@@ -184,7 +200,7 @@ const Department = () => {
               Manage departments and their policies
             </p>
           </div>
-          <Button variant="primary">
+          <Button variant="primary" onClick={handleCreateDepartment}>
             <div className="flex items-center gap-2">
               <PlusIcon className="h-5 w-5" />
               Create Department
@@ -203,7 +219,8 @@ const Department = () => {
           />
           <StatsCard
             title="Total Employees"
-            value={departments.reduce((acc, dept) => acc + dept.headCount, 0)}
+            // value={departments.reduce((acc, dept) => acc + dept.headCount, 0)}
+            value={0}
             icon={UserGroupIcon}
             iconColor="text-emerald-500"
             iconBgColor="bg-emerald-50"
