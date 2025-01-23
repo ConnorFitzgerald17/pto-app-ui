@@ -352,7 +352,7 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
                       <pre className="mt-2 text-xs text-gray-500">
                         email,role,department,team{"\n"}
                         john@example.com,EMPLOYEE,Engineering,Frontend{"\n"}
-                        jane@example.com,TEAM_LEAD,Marketing,Growth
+                        jane@example.com,EMPLOYEE,Marketing,Growth
                       </pre>
                     </div>
                   </div>

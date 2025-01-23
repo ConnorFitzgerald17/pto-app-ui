@@ -24,7 +24,7 @@ export const navigation = [
     section: "Admin",
   },
   {
-    name: "User",
+    name: "Users",
     href: "/user",
     icon: UsersIcon,
     permissions: [
@@ -41,7 +41,6 @@ export const navigation = [
     permissions: [
       PERMISSIONS_NEW.MANAGE_POLICIES,
       PERMISSIONS_NEW.VIEW_ALL_POLICIES,
-      PERMISSIONS_NEW.MANAGE_DEPARTMENT_POLICIES,
     ],
     section: "Admin",
   },

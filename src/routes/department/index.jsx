@@ -15,6 +15,9 @@ import LoadingSpinner from "src/components/loading-spinner";
 import ViewDepartment from "src/components/view-department";
 import EditDepartment from "src/components/edit-department";
 import CreateDepartment from "src/components/create-department";
+import orgThunks from "src/state/org/thunks";
+import policyThunks from "src/state/policy/thunks";
+
 const DepartmentRow = ({
   department,
   level = 0,
@@ -23,6 +26,14 @@ const DepartmentRow = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasChildren = department.children?.length > 0;
+
+  const handleEditDepartment = () => {
+    setEditDepartment(department);
+  };
+
+  const handleViewDepartment = () => {
+    setViewDepartment(department);
+  };
 
   return (
     <>
@@ -109,18 +120,14 @@ const DepartmentRow = ({
         <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
           <div className="flex justify-end gap-2">
             <button
-              onClick={() => {
-                setEditDepartment(department);
-              }}
+              onClick={handleEditDepartment}
               className="text-gray-600 hover:text-indigo-600"
             >
               Edit
             </button>
             <span className="text-gray-300">|</span>
             <button
-              onClick={() => {
-                setViewDepartment(department);
-              }}
+              onClick={handleViewDepartment}
               className="text-gray-600 hover:text-indigo-600"
             >
               View
@@ -134,6 +141,8 @@ const DepartmentRow = ({
             key={child.departmentId}
             department={child}
             level={level + 1}
+            setEditDepartment={setEditDepartment}
+            setViewDepartment={setViewDepartment}
           />
         ))}
     </>
@@ -151,6 +160,8 @@ const Department = () => {
 
   useEffect(() => {
     dispatch(departmentThunks.getDepartment());
+    dispatch(orgThunks.getOrgUsers());
+    dispatch(policyThunks.getPolicy());
   }, []);
 
   if (departmentsLoading) {
@@ -163,8 +174,6 @@ const Department = () => {
   const handleCreateDepartment = () => {
     setCreateDepartment(true);
   };
-
-  console.log(createDepartment);
 
   return (
     <>

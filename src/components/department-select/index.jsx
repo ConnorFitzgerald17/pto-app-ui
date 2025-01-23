@@ -34,14 +34,6 @@ const DepartmentSelect = ({ value, onChange, disabled = false }) => {
         return true;
       }
 
-      // Team Lead can only see their department
-      if (
-        role.level === ROLE_LEVELS.TEAM_LEAD &&
-        dept.departmentId === userDepartmentId
-      ) {
-        return true;
-      }
-
       return false;
     });
   };

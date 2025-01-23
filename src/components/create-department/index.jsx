@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog } from "@headlessui/react";
 import {
@@ -17,7 +17,6 @@ import ErrorBanner from "src/components/error-banner";
 import InputField from "src/components/input";
 import SelectMenu from "src/components/select";
 import LoadingSpinner from "src/components/loading-spinner";
-import orgThunks from "src/state/org/thunks";
 import UserTagSelect from "src/components/user-tag-select";
 import PolicyTypeGrid from "src/components/policy-type-grid";
 
@@ -37,10 +36,6 @@ const CreateDepartment = ({ isOpen, onClose }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    dispatch(orgThunks.getOrgUsers({}));
-  }, [dispatch]);
 
   const parentDepartments = useMemo(() => {
     if (!departments) return [];

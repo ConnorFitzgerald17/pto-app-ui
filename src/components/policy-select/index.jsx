@@ -12,7 +12,7 @@ const PolicySelect = ({ value = [], onChange, disabled = false }) => {
     if (!policies) {
       dispatch(policyThunks.getPolicy());
     }
-  }, [dispatch, policies]);
+  }, []);
 
   // Group policies by type
   const groupedPolicies = useMemo(() => {

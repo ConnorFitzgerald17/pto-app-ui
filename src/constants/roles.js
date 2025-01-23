@@ -23,15 +23,13 @@ export const ROLE_PERMISSIONS = {
     "MANAGE_TEAMS",
     "APPROVE_DEPARTMENT_LEAVE",
   ],
-  TEAM_LEAD: ["MANAGE_TEAM_USERS", "VIEW_TEAM_REPORTS", "APPROVE_TEAM_LEAVE"],
   EMPLOYEE: ["VIEW_SELF", "REQUEST_LEAVE", "VIEW_TEAM_CALENDAR"],
 };
 
 export const ROLE_LEVELS = {
-  SUPER_ADMIN: 5,
-  HR_ADMIN: 4,
-  DEPARTMENT_HEAD: 3,
-  TEAM_LEAD: 2,
+  SUPER_ADMIN: 4,
+  HR_ADMIN: 3,
+  DEPARTMENT_HEAD: 2,
   EMPLOYEE: 1,
 };
 
@@ -39,6 +37,5 @@ export const ROLE_LABELS = {
   SUPER_ADMIN: "Super Admin",
   HR_ADMIN: "HR Admin",
   DEPARTMENT_HEAD: "Department Head",
-  TEAM_LEAD: "Team Lead",
   EMPLOYEE: "Employee",
 };

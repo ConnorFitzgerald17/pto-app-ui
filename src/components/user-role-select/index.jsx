@@ -22,10 +22,8 @@ const UserRoleSelect = ({ value, onChange, disabled = false }) => {
 
     // Filter by scope (GLOBAL, DEPARTMENT, TEAM)
     switch (currentUserRoleScope) {
-      case "TEAM":
-        return ["TEAM_LEAD", "EMPLOYEE"].includes(roleKey);
       case "DEPARTMENT":
-        return ["DEPARTMENT_HEAD", "TEAM_LEAD", "EMPLOYEE"].includes(roleKey);
+        return ["DEPARTMENT_HEAD", "EMPLOYEE"].includes(roleKey);
       case "GLOBAL":
         return true;
       default:
