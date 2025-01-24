@@ -36,21 +36,17 @@ const DepartmentRow = ({
   };
   return (
     <>
-      <tr
-        className={`hover:bg-gray-50 ${
-          level > 0 ? "bg-gray-50 border-l-4 border-l-indigo-300" : ""
-        }`}
-      >
+      <tr className={level > 0 ? "bg-gray-100/80" : ""}>
         <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none">
           <div className="flex items-center">
             <div
               style={{ paddingLeft: `${level * 2}rem` }}
-              className="flex items-center"
+              className="flex items-center min-w-0 flex-1 pr-10"
             >
               {hasChildren && (
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="mr-2 p-1 hover:bg-gray-100 rounded"
+                  className="mr-2 p-1 hover:bg-gray-200 rounded flex-shrink-0"
                 >
                   {isExpanded ? (
                     <ChevronDownIcon className="h-5 w-5 text-indigo-500" />
@@ -59,40 +55,37 @@ const DepartmentRow = ({
                   )}
                 </button>
               )}
-              <div className="flex items-center">
-                <div
-                  className={`h-10 w-10 flex-shrink-0 ${
-                    level > 0 ? "scale-90" : ""
-                  }`}
-                >
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                      level > 0 ? "bg-indigo-100" : "bg-indigo-50"
-                    }`}
-                  >
-                    <BuildingOfficeIcon
-                      className={`h-6 w-6 ${
-                        level > 0 ? "text-indigo-500" : "text-indigo-600"
+              <div className="flex items-center min-w-0 flex-1">
+                <div className="flex-shrink-0">
+                  <div className={`h-10 w-10 ${level > 0 ? "scale-90" : ""}`}>
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                        level > 0 ? "bg-indigo-100" : "bg-indigo-50"
                       }`}
-                    />
+                    >
+                      <BuildingOfficeIcon
+                        className={`h-6 w-6 ${
+                          level > 0 ? "text-indigo-500" : "text-indigo-600"
+                        }`}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="ml-4">
+                <div className="ml-4 min-w-0 flex-1">
                   <div
-                    className={`font-medium ${
+                    className={`font-medium truncate ${
                       level > 0 ? "text-indigo-600" : "text-gray-900"
                     }`}
                   >
                     {department.name}
                   </div>
-                  <dl className="font-normal lg:hidden">
-                    <dt className="sr-only">Lead</dt>
-                    <dd className="mt-1 truncate text-gray-700">
-                      {department.manager || "N/A"}
-                    </dd>
-                    <dt className="sr-only">Policies</dt>
+                  {/* Mobile view - Only show manager */}
+                  <dl className="font-normal md:hidden">
+                    <dt className="sr-only">Manager</dt>
                     <dd className="mt-1 truncate text-gray-500">
-                      {department.policies?.join(", ")}
+                      {Array.isArray(department.managers)
+                        ? department.managers[0]
+                        : department.managers || "N/A"}
                     </dd>
                   </dl>
                 </div>
@@ -100,7 +93,7 @@ const DepartmentRow = ({
             </div>
           </div>
         </td>
-        <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell relative">
+        <td className="hidden md:table-cell px-3 py-4 text-sm text-gray-500 relative">
           {department.managers ? (
             <div className="flex items-center gap-2">
               <span>
@@ -128,7 +121,7 @@ const DepartmentRow = ({
             "N/A"
           )}
         </td>
-        <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
+        <td className="hidden md:table-cell px-3 py-4 text-sm text-gray-500">
           <div className="flex flex-col">
             <span>{department.directCount || 0}</span>
             {department.children?.length > 0 && (
@@ -138,7 +131,7 @@ const DepartmentRow = ({
             )}
           </div>
         </td>
-        <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+        <td className="hidden lg:table-cell px-3 py-4 text-sm text-gray-500">
           {department.policies?.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
@@ -163,7 +156,7 @@ const DepartmentRow = ({
             "N/A"
           )}
         </td>
-        <td className="px-3 py-4 text-sm text-gray-500">
+        <td className="hidden lg:table-cell px-3 py-4 text-sm text-gray-500">
           <span
             className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
               department.status === "ACTIVE"
@@ -174,7 +167,7 @@ const DepartmentRow = ({
             {department.status}
           </span>
         </td>
-        <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+        <td className="px-3 py-4 text-right text-sm font-medium">
           <div className="flex justify-end gap-2">
             <button
               onClick={handleEditDepartment}
@@ -235,6 +228,12 @@ const Department = () => {
     setCreateDepartment(true);
   };
 
+  const handleCloseAndRefresh = () => {
+    setEditDepartment(false);
+    setCreateDepartment(false);
+    dispatch(departmentThunks.getDepartment());
+  };
+
   const getAverageTeamSize = () => {
     if (!departments || !departments.length) return 0;
 
@@ -260,7 +259,7 @@ const Department = () => {
       {createDepartment && (
         <CreateDepartment
           isOpen={!!createDepartment}
-          onClose={() => setCreateDepartment(false)}
+          onClose={handleCloseAndRefresh}
         />
       )}
       {viewDepartment && (
@@ -273,7 +272,7 @@ const Department = () => {
 
       <EditDepartment
         isOpen={!!editDepartment}
-        onClose={() => setEditDepartment(false)}
+        onClose={handleCloseAndRefresh}
         department={editDepartment}
         managers={managers || []}
         policies={policies || []}
@@ -315,7 +314,7 @@ const Department = () => {
           />
           <StatsCard
             title="Departments w/o Lead"
-            value={departments.filter((d) => !d.manager).length}
+            value={departments.filter((d) => !d.departmentHeads).length}
             icon={ExclamationCircleIcon}
             iconColor="text-red-500"
             iconBgColor="bg-red-50"
@@ -335,29 +334,29 @@ const Department = () => {
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
+                  className="hidden md:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Lead
+                  Managers
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
+                  className="hidden md:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
                   Members
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
+                  className="hidden lg:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
                   Policies
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  className="hidden lg:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
                   Status
                 </th>
-                <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                   <span className="sr-only">Actions</span>
                 </th>
               </tr>

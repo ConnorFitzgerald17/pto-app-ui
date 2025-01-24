@@ -1,4 +1,4 @@
-import { useState, } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog } from "@headlessui/react";
 import {
@@ -22,9 +22,22 @@ import LoadingSpinner from "src/components/loading-spinner";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  departmentHeads: Yup.array().of(Yup.string()),
-  status: Yup.string().oneOf(["ACTIVE", "INACTIVE"]).required(),
-  defaultPolicyIds: Yup.array().of(Yup.string()),
+  departmentHeads: Yup.array()
+    .of(Yup.string())
+    .min(1, "At least one department head is required"),
+  status: Yup.string()
+    .oneOf(["ACTIVE", "INACTIVE"])
+    .required("Status is required"),
+  defaultPolicyIds: Yup.array()
+    .of(Yup.string())
+    .test(
+      "has-required-policies",
+      "All required policy types must be assigned",
+      function (value) {
+        if (this.parent.parentDepartmentId) return true;
+        return value && value.length > 0;
+      },
+    ),
 });
 
 const EditDepartment = ({ isOpen, onClose, department }) => {
@@ -73,6 +86,24 @@ const EditDepartment = ({ isOpen, onClose, department }) => {
     },
   });
 
+  const getUserDetails = (userId) => {
+    const user = orgUsers.users?.find((u) => u.userId === userId);
+    if (!user) return null;
+    return {
+      role: user.role?.name || "N/A",
+      department: user.department || "No Department",
+      isFromDifferentDepartment:
+        user.departmentId && user.departmentId !== department?.departmentId,
+    };
+  };
+
+  const hasUsersFromDifferentDepartments = formik.values.departmentHeads.some(
+    (userId) => {
+      const details = getUserDetails(userId);
+      return details?.isFromDifferentDepartment;
+    },
+  );
+
   if (orgLoading || departmentLoading) {
     return <LoadingSpinner />;
   }
@@ -83,7 +114,7 @@ const EditDepartment = ({ isOpen, onClose, department }) => {
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+          <Dialog.Panel className="relative transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
             <div className="sm:flex sm:items-start">
               <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
                 <BuildingOfficeIcon
@@ -142,6 +173,27 @@ const EditDepartment = ({ isOpen, onClose, department }) => {
                   >
                     Department Heads
                   </label>
+
+                  {hasUsersFromDifferentDepartments && (
+                    <div className="mt-2 mb-3 rounded-md bg-yellow-50 p-3">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <InformationCircleIcon
+                            className="h-5 w-5 text-yellow-400"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm text-yellow-700">
+                            Some selected users are currently assigned to
+                            different departments. They will be automatically
+                            transferred to this department when saved.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-1">
                     <UserTagSelect
                       users={orgUsers.users || []}
@@ -151,8 +203,16 @@ const EditDepartment = ({ isOpen, onClose, department }) => {
                       }
                       disabled={isLoading}
                       placeholder="Search for users to add as department heads..."
+                      currentDepartmentId={department?.departmentId}
                     />
                   </div>
+
+                  {formik.touched.departmentHeads &&
+                    formik.errors.departmentHeads && (
+                      <div className="mt-1 text-sm text-red-600">
+                        {formik.errors.departmentHeads}
+                      </div>
+                    )}
                 </div>
 
                 <div>
@@ -172,6 +232,11 @@ const EditDepartment = ({ isOpen, onClose, department }) => {
                     disabled={isLoading}
                     placeholder="Select status..."
                   />
+                  {formik.touched.status && formik.errors.status && (
+                    <div className="mt-1 text-sm text-red-600">
+                      {formik.errors.status}
+                    </div>
+                  )}
                 </div>
 
                 {!department?.parentDepartmentId ? (
@@ -181,7 +246,14 @@ const EditDepartment = ({ isOpen, onClose, department }) => {
                       onChange={(value) =>
                         formik.setFieldValue("defaultPolicyIds", value)
                       }
+                      disabled={isLoading}
                     />
+                    {formik.touched.defaultPolicyIds &&
+                      formik.errors.defaultPolicyIds && (
+                        <div className="mt-1 text-sm text-red-600">
+                          {formik.errors.defaultPolicyIds}
+                        </div>
+                      )}
                   </div>
                 ) : (
                   <div className="rounded-md bg-yellow-50 p-3">

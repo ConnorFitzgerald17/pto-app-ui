@@ -46,18 +46,18 @@ const ViewDepartment = ({ isOpen, onClose, department }) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-3 pb-3 pt-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 md:max-w-xl lg:max-w-2xl">
                 <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+                  <div className="mx-auto flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0">
                     <BuildingOfficeIcon
-                      className="h-6 w-6 text-indigo-600"
+                      className="h-5 w-5 text-indigo-600 sm:h-6 sm:w-6"
                       aria-hidden="true"
                     />
                   </div>
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                     <Dialog.Title
                       as="h3"
-                      className="text-base font-semibold leading-6 text-gray-900"
+                      className="text-lg font-semibold leading-6 text-gray-900"
                     >
                       Department Details
                     </Dialog.Title>
@@ -69,7 +69,7 @@ const ViewDepartment = ({ isOpen, onClose, department }) => {
                   </div>
                 </div>
 
-                <div className="mt-6 space-y-6">
+                <div className="mt-6 space-y-4 sm:space-y-6">
                   <div>
                     <h4 className="text-sm font-medium text-gray-500">Name</h4>
                     <p className="mt-1 text-sm text-gray-900">
@@ -103,7 +103,7 @@ const ViewDepartment = ({ isOpen, onClose, department }) => {
                     <h4 className="text-sm font-medium text-gray-500">
                       Members
                     </h4>
-                    <div className="mt-2 flex items-center gap-4">
+                    <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div className="flex items-center gap-2">
                         <UserGroupIcon className="h-5 w-5 text-gray-400" />
                         <span className="text-sm text-gray-900">
@@ -157,7 +157,7 @@ const ViewDepartment = ({ isOpen, onClose, department }) => {
                       <h4 className="text-sm font-medium text-gray-500">
                         Sub-departments
                       </h4>
-                      <div className="mt-2 space-y-2">
+                      <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                         {department.children.map((child) => (
                           <div
                             key={child.departmentId}
@@ -176,21 +176,21 @@ const ViewDepartment = ({ isOpen, onClose, department }) => {
                   )}
 
                   <div className="space-y-2 text-xs text-gray-500">
-                    <p>
+                    <p className="sm:inline-block sm:w-1/2">
                       Created: {format(new Date(department.createdAt), "PPpp")}
                     </p>
-                    <p>
+                    <p className="sm:inline-block sm:w-1/2">
                       Last Updated:{" "}
                       {format(new Date(department.updatedAt), "PPpp")}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-5 sm:mt-6">
+                <div className="mt-4 sm:mt-6">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                    className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:text-base"
                   >
                     Close
                   </button>

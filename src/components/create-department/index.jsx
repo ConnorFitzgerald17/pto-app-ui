@@ -23,8 +23,19 @@ import PolicyTypeGrid from "src/components/policy-type-grid";
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Department name is required"),
   parentDepartmentId: Yup.string().nullable(),
-  departmentHeads: Yup.array().of(Yup.string()),
-  defaultPolicyIds: Yup.array().of(Yup.string()),
+  departmentHeads: Yup.array()
+    .of(Yup.string())
+    .min(1, "At least one department head is required"),
+  defaultPolicyIds: Yup.array()
+    .of(Yup.string())
+    .test(
+      "has-required-policies",
+      "At least one policy must be assigned",
+      function (value) {
+        if (this.parent.parentDepartmentId) return true;
+        return value && value.length > 0;
+      },
+    ),
 });
 
 const CreateDepartment = ({ isOpen, onClose }) => {
@@ -83,6 +94,14 @@ const CreateDepartment = ({ isOpen, onClose }) => {
     },
   });
 
+  const hasUsersFromDifferentDepartments = useMemo(() => {
+    if (!formik.values.departmentHeads.length) return false;
+    return formik.values.departmentHeads.some((userId) => {
+      const user = orgUsers.users?.find((u) => u.userId === userId);
+      return user?.departmentId && user.departmentId !== null;
+    });
+  }, [formik.values.departmentHeads, orgUsers.users]);
+
   if (orgLoading || departmentLoading) {
     return <LoadingSpinner />;
   }
@@ -93,7 +112,7 @@ const CreateDepartment = ({ isOpen, onClose }) => {
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+          <Dialog.Panel className="relative transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
             <div className="sm:flex sm:items-start">
               <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
                 <BuildingOfficeIcon
@@ -153,6 +172,27 @@ const CreateDepartment = ({ isOpen, onClose }) => {
                   >
                     Department Heads
                   </label>
+
+                  {hasUsersFromDifferentDepartments && (
+                    <div className="mt-2 mb-3 rounded-md bg-yellow-50 p-3">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <InformationCircleIcon
+                            className="h-5 w-5 text-yellow-400"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm text-yellow-700">
+                            Some selected users are currently assigned to
+                            different departments. They will be automatically
+                            transferred to this department when saved.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-1">
                     <UserTagSelect
                       users={orgUsers.users || []}
@@ -162,6 +202,7 @@ const CreateDepartment = ({ isOpen, onClose }) => {
                       }
                       disabled={isLoading}
                       placeholder="Search for users to add as department heads..."
+                      currentDepartmentId={null}
                     />
                   </div>
                   {formik.touched.departmentHeads &&

@@ -116,6 +116,7 @@ const PolicyTypeGrid = ({ value = [], onChange, disabled = false }) => {
                   <div className="max-h-[200px] overflow-y-auto py-1">
                     {typePolicies.map((policy) => (
                       <button
+                        type="button"
                         key={policy.policyId}
                         onClick={() => {
                           const newValue = value.filter(
