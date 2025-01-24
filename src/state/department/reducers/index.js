@@ -10,6 +10,7 @@ import { updateDepartment } from "./update-department";
 export const initialState = {
   isLoading: true,
   department: null,
+  totalDepartmentCount: 0,
 };
 
 const actionMap = {

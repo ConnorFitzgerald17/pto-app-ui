@@ -9,7 +9,8 @@ export const getDepartment = createThunk({
 
     const department = result.data;
     return {
-      department,
+      department: department.hierarchy,
+      totalDepartmentCount: department?.totalDepartmentCount || 0,
     };
   },
   onStart: [() => departmentActions.setDepartmentLoading(true)],

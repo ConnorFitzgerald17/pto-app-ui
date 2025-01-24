@@ -32,8 +32,6 @@ const EditUser = ({ isOpen, onClose, user }) => {
 
   const userLoading = useSelector((state) => state.org.isLoading);
 
-  console.log("userLoading", userLoading);
-
   const handleClose = () => {
     formik.resetForm();
     onClose();
@@ -176,43 +174,7 @@ const EditUser = ({ isOpen, onClose, user }) => {
               </div>
             )}
           </div>
-          {/* We can implement later if we need to */}
-          {/* <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700">
-              PTO Policies
-            </label>
-            <div className="mt-2 space-y-2">
-              {policies &&
-                policies.map((policy) => (
-                  <div key={policy.policyId} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`policy-${policy.policyId}`}
-                      name="policyIds"
-                      value={policy.policyId}
-                      checked={formik.values.policyIds.includes(
-                        policy.policyId,
-                      )}
-                      onChange={(e) => {
-                        const newPolicyIds = e.target.checked
-                          ? [...formik.values.policyIds, policy.policyId]
-                          : formik.values.policyIds.filter(
-                              (id) => id !== policy.policyId,
-                            );
-                        formik.setFieldValue("policyIds", newPolicyIds);
-                      }}
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <label
-                      htmlFor={`policy-${policy.policyId}`}
-                      className="ml-2 block text-sm text-gray-900"
-                    >
-                      {policy.name}
-                    </label>
-                  </div>
-                ))}
-            </div>
-          </div> */}
+
           <div>
             <DepartmentSelect
               value={formik.values.departmentId}

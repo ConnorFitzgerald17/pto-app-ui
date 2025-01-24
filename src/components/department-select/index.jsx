@@ -14,6 +14,7 @@ const DepartmentSelect = ({ value, onChange, disabled = false }) => {
   const currentUserDepartmentId = useSelector(
     (state) => state.user.details.departmentId,
   );
+
   useEffect(() => {
     dispatch(departmentsThunks.getDepartment());
   }, [dispatch]);

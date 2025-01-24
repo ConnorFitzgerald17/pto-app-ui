@@ -26,7 +26,6 @@ const RegisterInviteRoute = () => {
 
   useEffect(() => {
     userService.verifyInvite(token).then((res) => {
-      console.log("res", res);
       setOrganization(res.data.name);
     });
   }, [token]);

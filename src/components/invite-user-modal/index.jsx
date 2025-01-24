@@ -57,7 +57,6 @@ const InviteUserModal = ({ isOpen, onClose, fetchUsers }) => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log("values", values);
       try {
         dispatch(
           userThunks.invite(
